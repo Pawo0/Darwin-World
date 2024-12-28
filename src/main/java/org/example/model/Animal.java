@@ -94,4 +94,7 @@ public class Animal implements WorldElement {
         return deathDate;
     }
 
+    public void substractCopulationEnergy(int energyToSubstract) {
+        this.energy -= energyToSubstract;
+    }
 }
