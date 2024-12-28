@@ -10,6 +10,8 @@ public class WorldMap implements WorldMapInterface {
 
     private final Comparator<Animal> animalComparator = new AnimalComparator();
 
+    private final Map<Vector2d, Integer> chanceOfGrassGrowing;
+
     private final Vector2d lowerLeft;
     private final Vector2d upperRight;
     private final int energyNeededToCopulate;
@@ -24,8 +26,25 @@ public class WorldMap implements WorldMapInterface {
         this.lowerLeft = new Vector2d(0, 0);
         this.upperRight = new Vector2d(9, 9);
         this.energyNeededToCopulate = 100;
+        this.chanceOfGrassGrowing = new HashMap<>();
+        addGrassGrowingChance();
     }
 
+    private void addGrassGrowingChance() {
+        int middleEquator = (upperRight.getX() + lowerLeft.getX()) / 2;
+        int equatorTop = middleEquator + middleEquator / 10;
+        int equatorBottom = middleEquator - middleEquator / 10;
+
+        for (Map.Entry<Vector2d, Grass> entry : grasses.entrySet()) {
+            if (entry.getKey().getY() > equatorTop) {
+                chanceOfGrassGrowing.put(entry.getKey(), 20);
+            } else if (entry.getKey().getY() < equatorBottom) {
+                chanceOfGrassGrowing.put(entry.getKey(), 20);
+            } else {
+                chanceOfGrassGrowing.put(entry.getKey(), 80);
+            }
+        }
+    }
 
     @Override
     public boolean place(Animal animal) throws IncorrectPositionException {
@@ -54,7 +73,11 @@ public class WorldMap implements WorldMapInterface {
 
     @Override
     public void grassGrows() {
-//        todo: implementacja rosniecia trawy
+        for (Map.Entry<Vector2d, Integer> entry : chanceOfGrassGrowing.entrySet()) {
+            if (!isGrassAt(entry.getKey()) && new Random().nextInt(100) < entry.getValue()) {
+                grasses.put(entry.getKey(), new Grass(entry.getKey()));
+            }
+        }
     }
 
     @Override
