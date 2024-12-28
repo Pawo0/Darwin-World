@@ -17,6 +17,7 @@ public class Animal implements WorldElement {
     private int geneIndex;
     private int grassEaten;
 
+
     public Animal(List<Integer> genotype, Vector2d position) {
         this.position = position;
         this.energy = 100;
@@ -89,5 +90,8 @@ public class Animal implements WorldElement {
         return grassEaten;
     }
 
+    public int getDeathDate() {
+        return deathDate;
+    }
 
 }
