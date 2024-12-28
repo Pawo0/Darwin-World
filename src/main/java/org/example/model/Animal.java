@@ -13,12 +13,12 @@ public class Animal implements WorldElement {
     private List<Animal> children;
     private int deathDate;
     private MapDirection mapDirection;
-    private List<Integer> genotype;
+    private Genome genotype;
     private int geneIndex;
     private int grassEaten;
 
 
-    public Animal(List<Integer> genotype, Vector2d position) {
+    public Animal(Genome genotype, Vector2d position) {
         this.position = position;
         this.energy = 100;
         this.childrenCounter = 0;
@@ -38,7 +38,7 @@ public class Animal implements WorldElement {
     }
 
     public void move() {
-        MapDirection newDirection = this.mapDirection.rotate(genotype.get(geneIndex%genotype.size()));
+        MapDirection newDirection = this.mapDirection.rotate(genotype.getGen(geneIndex%genotype.getGenomSize()));
         this.mapDirection = newDirection;
         this.position = this.position.add(mapDirection.toUnitVector());
         this.geneIndex++;
@@ -78,7 +78,7 @@ public class Animal implements WorldElement {
         return mapDirection;
     }
 
-    public List<Integer> getGenotype() {
+    public Genome getGenotype() {
         return genotype;
     }
 
