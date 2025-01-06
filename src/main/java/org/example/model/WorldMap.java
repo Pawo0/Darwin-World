@@ -6,6 +6,8 @@ public class WorldMap implements WorldMapInterface {
     private final UUID id;
     private final Map<Vector2d, PriorityQueue<Animal>> liveAnimals;
     private final Map<Vector2d, PriorityQueue<Animal>> deadAnimals;
+
+
     private final Map<Vector2d, Grass> grasses;
 
     private final Comparator<Animal> animalComparator = new AnimalComparator();
@@ -28,6 +30,10 @@ public class WorldMap implements WorldMapInterface {
         this.energyNeededToCopulate = 50;
         this.chanceOfGrassGrowing = new HashMap<>();
         addGrassGrowingChance();
+    }
+
+    public Map<Vector2d, Grass> getGrasses() {
+        return grasses;
     }
 
     private void addGrassGrowingChance() {
