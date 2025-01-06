@@ -97,8 +97,7 @@ public class WorldMap implements WorldMapInterface {
 
     public Animal copulate(Animal animal1, Animal animal2) {
         Vector2d position = animal1.getPosition();
-//        todo: stworz genom z rodzicow
-        Animal child = new Animal(List.of(0), position);
+        Animal child = new Animal(new Genome(animal1, animal2), position);
         liveAnimals.get(position).add(child);
         return child;
     }
