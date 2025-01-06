@@ -34,7 +34,7 @@ public class Animal implements WorldElement {
 
     @Override
     public Vector2d getPosition() {
-        return null;
+        return position;
     }
 
     public void move() {

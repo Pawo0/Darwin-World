@@ -25,7 +25,7 @@ public class WorldMap implements WorldMapInterface {
 //        bedzie pobierane z ustawien
         this.lowerLeft = new Vector2d(0, 0);
         this.upperRight = new Vector2d(9, 9);
-        this.energyNeededToCopulate = 100;
+        this.energyNeededToCopulate = 50;
         this.chanceOfGrassGrowing = new HashMap<>();
         addGrassGrowingChance();
     }
@@ -35,38 +35,53 @@ public class WorldMap implements WorldMapInterface {
         int equatorTop = middleEquator + middleEquator / 10;
         int equatorBottom = middleEquator - middleEquator / 10;
 
-        for (Map.Entry<Vector2d, Grass> entry : grasses.entrySet()) {
-            if (entry.getKey().getY() > equatorTop) {
-                chanceOfGrassGrowing.put(entry.getKey(), 20);
-            } else if (entry.getKey().getY() < equatorBottom) {
-                chanceOfGrassGrowing.put(entry.getKey(), 20);
-            } else {
-                chanceOfGrassGrowing.put(entry.getKey(), 80);
+        for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
+            for (int y = lowerLeft.getY(); y <= upperRight.getY(); y++) {
+                Vector2d position = new Vector2d(x, y);
+                if (y > equatorTop) {
+                    chanceOfGrassGrowing.put(position, 20);
+                } else if (y < equatorBottom) {
+                    chanceOfGrassGrowing.put(position, 20);
+                } else {
+                    chanceOfGrassGrowing.put(position, 80);
+                }
             }
         }
     }
 
+    public Map<Vector2d, Integer> getChanceOfGrassGrowing() {
+        return chanceOfGrassGrowing;
+    }
+
     @Override
-    public boolean place(Animal animal) throws IncorrectPositionException {
+    public boolean place(Animal animal) {
         Vector2d position = animal.getPosition();
         liveAnimals.putIfAbsent(position, new PriorityQueue<>(animalComparator));
+        liveAnimals.get(position).add(animal);
         return true;
     }
+
 
     @Override
     public void allAnimalsMove() {
         for (PriorityQueue<Animal> animals : liveAnimals.values()) {
             for (Animal animal : animals) {
+                liveAnimals.get(animal.getPosition()).remove(animal);
                 animal.move();
+                this.place(animal);
             }
         }
     }
 
     @Override
     public void allAnimalsEat() {
+//        jesli na polu jest wiecej zwierzat, to je tylko pierwszy - czyli ten co ma najwiecej energii - moze zrobimy od tylu?
         for (PriorityQueue<Animal> animals : liveAnimals.values()) {
             for (Animal animal : animals) {
-                animal.eat();
+                if (isGrassAt(animal.getPosition())) {
+                    animal.eat();
+                    grasses.remove(animal.getPosition());
+                }
             }
         }
     }
@@ -89,6 +104,7 @@ public class WorldMap implements WorldMapInterface {
                     partner = findPartner(animal, animals);
                     if (partner != null) {
                         animals.add(copulate(animal, partner));
+                        return;
                     }
                 }
             }
@@ -97,9 +113,9 @@ public class WorldMap implements WorldMapInterface {
 
     public Animal copulate(Animal animal1, Animal animal2) {
         Vector2d position = animal1.getPosition();
-        Animal child = new Animal(new Genome(animal1, animal2), position);
-        liveAnimals.get(position).add(child);
-        return child;
+        animal1.substractCopulationEnergy(energyNeededToCopulate);
+        animal2.substractCopulationEnergy(energyNeededToCopulate);
+        return new Animal(new Genome(animal1, animal2), position);
     }
 
     public Animal findPartner(Animal animal1, PriorityQueue<Animal> animals) {
