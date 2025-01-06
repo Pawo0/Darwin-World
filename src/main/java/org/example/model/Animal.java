@@ -45,6 +45,12 @@ public class Animal implements WorldElement {
         this.energy--;
     }
 
+    public void birthChild(Animal child, int energyToSubstract) {
+        this.children.add(child);
+        this.childrenCounter++;
+        this.energy -= energyToSubstract;
+    }
+
     public void eat(){
         this.energy += ENERGY_FROM_EATING;
         this.grassEaten++;

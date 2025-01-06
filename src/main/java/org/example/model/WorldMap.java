@@ -121,7 +121,10 @@ public class WorldMap implements WorldMapInterface {
         Vector2d position = animal1.getPosition();
         animal1.substractCopulationEnergy(energyNeededToCopulate);
         animal2.substractCopulationEnergy(energyNeededToCopulate);
-        return new Animal(new Genome(animal1, animal2), position);
+        Animal child = new Animal(new Genome(animal1, animal2), position);
+        animal1.birthChild(child, energyNeededToCopulate);
+        animal2.birthChild(child, energyNeededToCopulate);
+        return child;
     }
 
     public Animal findPartner(Animal animal1, PriorityQueue<Animal> animals) {
