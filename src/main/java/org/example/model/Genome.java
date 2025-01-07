@@ -50,11 +50,17 @@ public class Genome {
         }
         genome.addAll(leftSide);
         genome.addAll(rightSide);
-        mutate();
+        this.mutate();
     }
 
-    private void mutate(){
-
+    protected void mutate(){
+        Random random = new Random();
+        int numberOfMutations = random.nextInt(this.getLength()-1);
+        for (int i = 0; i < numberOfMutations; i++){
+            int geneIndex = random.nextInt(this.getLength());
+            int geneValue = random.nextInt(8);
+            this.getGenome().set(geneIndex, geneValue);
+        }
     }
 
     public List<Integer> getGenome() {

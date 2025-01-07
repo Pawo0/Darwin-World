@@ -109,7 +109,8 @@ public class WorldMap implements WorldMapInterface {
                 if (animal.getEnergy() > energyNeededToCopulate) {
                     partner = findPartner(animal, animals);
                     if (partner != null) {
-                        animals.add(copulate(animal, partner));
+                        Animal child = copulate(animal, partner);
+                        this.place(child);
                         return;
                     }
                 }

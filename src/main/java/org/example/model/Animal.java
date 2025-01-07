@@ -32,10 +32,6 @@ public class Animal implements WorldElement {
         this.deathDate = -1;
     }
 
-    @Override
-    public Vector2d getPosition() {
-        return position;
-    }
 
     public void move() {
         MapDirection newDirection = this.mapDirection.rotate(genotype.getGen(geneIndex%genotype.getGenomSize()));
@@ -62,6 +58,11 @@ public class Animal implements WorldElement {
 
     public void animalDeath(){
         this.deathDate=this.age;
+    }
+
+    @Override
+    public Vector2d getPosition() {
+        return position;
     }
 
     public int getEnergy() {
