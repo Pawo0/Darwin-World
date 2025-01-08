@@ -1,5 +1,6 @@
 package org.example.model;
 
+import java.security.spec.RSAOtherPrimeInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -55,9 +56,9 @@ public class Genome {
 
     protected void mutate(){
         Random random = new Random();
-        int numberOfMutations = random.nextInt(this.getLength()-1);
+        int numberOfMutations = random.nextInt(genome.size()/2);
         for (int i = 0; i < numberOfMutations; i++){
-            int geneIndex = random.nextInt(this.getLength());
+            int geneIndex = random.nextInt(genome.size());
             int geneValue = random.nextInt(8);
             this.getGenome().set(geneIndex, geneValue);
         }
