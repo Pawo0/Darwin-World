@@ -104,4 +104,9 @@ public class Animal implements WorldElement {
     public void substractCopulationEnergy(int energyToSubstract) {
         this.energy -= energyToSubstract;
     }
+
+    @Override
+    public String toString(){
+        return "A";
+    }
 }

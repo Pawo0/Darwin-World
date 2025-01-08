@@ -1,20 +1,22 @@
 package org.example;
 
-import org.example.model.Animal;
-import org.example.model.Genome;
-import org.example.model.Vector2d;
+import org.example.model.*;
 
 public class Main {
     public static void main(String[] args) {
-        Animal animal1 = new Animal(new Genome(9), new Vector2d(0,0));
-        Animal animal2 = new Animal(new Genome(9), new Vector2d(0,0));
-        System.out.println("Animal1 " + animal1.getGenotype().getGenome().toString());
-        System.out.println("Animal2 " + animal2.getGenotype().getGenome().toString());
-        animal2.substractCopulationEnergy(50);
-        System.out.println("Animal1 " + animal1.getEnergy());
-        System.out.println("Animal2 " + animal2.getEnergy());
-        Genome genom = new Genome(animal1,animal2);
-        System.out.println(genom.getGenome().toString());
+        WorldMap map = new WorldMap();
+        Genome genome = new Genome(5);
+        System.out.println(genome.getGenome().toString());
+        map.addObserver(new ConsoleMapDisplay());
+        map.grassGrows();
+        map.place(new Animal(genome, new Vector2d(2, 2)));
+        map.allAnimalsMove();
+        map.allAnimalsMove();
+        map.allAnimalsMove();
+        map.allAnimalsMove();
+        map.allAnimalsMove();
+        map.allAnimalsMove();
+        map.allAnimalsMove();
     }
 
 }

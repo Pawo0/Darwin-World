@@ -1,5 +1,7 @@
 package org.example.model;
 
+import org.example.MapVisualizer;
+
 import java.util.*;
 
 public class WorldMap implements WorldMapInterface {
@@ -17,6 +19,8 @@ public class WorldMap implements WorldMapInterface {
     private final Vector2d lowerLeft;
     private final Vector2d upperRight;
     private final int energyNeededToCopulate;
+
+    private List<MapChangeListener> observers = new ArrayList<MapChangeListener>();
 
     public WorldMap() {
         this.id = UUID.randomUUID();
@@ -68,15 +72,30 @@ public class WorldMap implements WorldMapInterface {
     }
 
 
+//    @Override
+//    public void allAnimalsMove() {
+//        for (PriorityQueue<Animal> animals : liveAnimals.values()) {
+//            for (Animal animal : animals) {
+//                liveAnimals.get(animal.getPosition()).remove(animal);
+//                animal.move();
+//                this.place(animal);
+//            }
+//        }
+//        notifyObservers("chuj");
+//    }
+
     @Override
     public void allAnimalsMove() {
+        List<Animal> animalsToMove = new ArrayList<>();
         for (PriorityQueue<Animal> animals : liveAnimals.values()) {
-            for (Animal animal : animals) {
-                liveAnimals.get(animal.getPosition()).remove(animal);
-                animal.move();
-                this.place(animal);
-            }
+            animalsToMove.addAll(animals);
         }
+        for (Animal animal : animalsToMove) {
+            liveAnimals.get(animal.getPosition()).remove(animal);
+            animal.move();
+            this.place(animal);
+        }
+        notifyObservers("chuj");
     }
 
     @Override
@@ -157,6 +176,10 @@ public class WorldMap implements WorldMapInterface {
         return grasses.containsKey(position);
     }
 
+    public Grass getGrassAt(Vector2d position) {
+        return grasses.get(position);
+    }
+
     @Override
     public void checkForDeadAnimals() {
         for (PriorityQueue<Animal> animals : liveAnimals.values()) {
@@ -180,5 +203,18 @@ public class WorldMap implements WorldMapInterface {
     @Override
     public UUID getId() {
         return this.id;
+    }
+
+    public void addObserver(MapChangeListener observer) {
+        observers.add(observer);
+    }
+
+    public void notifyObservers(String message) {
+        for (MapChangeListener observer : observers) {
+            observer.mapChanged(this, message);
+        }
+    }
+    public String toString() {
+        return new MapVisualizer(this).draw(getCurrentBounds().lowerLeft(), getCurrentBounds().upperRight());
     }
 }
