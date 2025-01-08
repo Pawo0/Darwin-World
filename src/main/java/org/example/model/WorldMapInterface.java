@@ -24,7 +24,5 @@ public interface WorldMapInterface {
 
     PriorityQueue<Animal> animalsAt(Vector2d position);
 
-    Boundary getCurrentBounds();
-
     UUID getId();
 }
