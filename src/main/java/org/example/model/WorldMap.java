@@ -175,9 +175,9 @@ public class WorldMap implements WorldMapInterface {
 
     public Animal copulate(Animal animal1, Animal animal2) {
         Vector2d position = animal1.getPosition();
-        animal1.substractCopulationEnergy(energyNeededToCopulate);
-        animal2.substractCopulationEnergy(energyNeededToCopulate);
-        Animal child = new Animal(new Genome(animal1, animal2), position, this.settings);
+        animal1.subtractCopulationEnergy(energyNeededToCopulate);
+        animal2.subtractCopulationEnergy(energyNeededToCopulate);
+        Animal child = new Animal(new Genome(animal1, animal2, this.settings), position, this.settings);
         animal1.birthChild(child, energyNeededToCopulate);
         animal2.birthChild(child, energyNeededToCopulate);
         return child;
@@ -216,18 +216,22 @@ public class WorldMap implements WorldMapInterface {
         return grasses.get(position);
     }
 
+
     @Override
     public void checkForDeadAnimals() {
+        List<Animal> animalsToRemove = new ArrayList<>();
         for (PriorityQueue<Animal> animals : liveAnimals.values()) {
             for (Animal animal : animals) {
                 if (animal.getEnergy() < 0) {
-                    Vector2d position = animal.getPosition();
-                    animals.remove(animal);
-//                    jeśli nie ma na polu zadnego martwego tworzymy kolejke
-                    deadAnimals.putIfAbsent(position, new PriorityQueue<>(animalComparator));
-                    deadAnimals.get(position).add(animal);
+                    animalsToRemove.add(animal);
                 }
             }
+        }
+        for (Animal animal : animalsToRemove) {
+            Vector2d position = animal.getPosition();
+            liveAnimals.get(position).remove(animal);
+            deadAnimals.putIfAbsent(position, new PriorityQueue<>(animalComparator));
+            deadAnimals.get(position).add(animal);
         }
     }
 
@@ -248,5 +252,13 @@ public class WorldMap implements WorldMapInterface {
     }
     public String toString() {
         return new MapVisualizer(this).draw(boundary.lowerLeft(), boundary.upperRight());
+    }
+
+    public int liveAnimalsAmount() {
+        int amount = 0;
+        for (PriorityQueue<Animal> animals : liveAnimals.values()) {
+            amount += animals.size();
+        }
+        return amount;
     }
 }

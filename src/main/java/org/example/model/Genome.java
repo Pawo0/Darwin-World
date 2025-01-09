@@ -8,10 +8,12 @@ import java.util.Random;
 public class Genome {
     private List<Integer> genome;
     private int length;
+    private SimulationSettings settings;
 
-    public Genome(int length) {
+    public Genome(SimulationSettings settings) {
+        this.settings = settings;
         Random random = new Random();
-        this.length = length;
+        this.length = settings.getGenomeLength();
         genome = new ArrayList<Integer>();
         for (int i = 0; i < length; i++){
             genome.add(random.nextInt(8));
@@ -19,9 +21,10 @@ public class Genome {
     }
 
 
-    public Genome(Animal parent1, Animal parent2) {
+    public Genome(Animal parent1, Animal parent2, SimulationSettings settings){
         Random random = new Random();
-        int length = parent1.getGenotype().getLength();
+        this.settings = settings;
+        int length = settings.getGenomeLength();
         genome = new ArrayList<Integer>();
         int side = random.nextInt(2); // 0 - left 1 - right
         int totalEnergy = parent1.getEnergy() + parent2.getEnergy();
@@ -43,7 +46,6 @@ public class Genome {
         if (side == 0){
             leftSide = strongerParent.getGenome().subList(0, slicePoint);
             rightSide = otherParent.getGenome().subList(slicePoint, length);
-            System.out.println("jestem po lewej");
         }
         else {
             rightSide = strongerParent.getGenome().subList(length-slicePoint, length);
@@ -56,7 +58,7 @@ public class Genome {
 
     protected void mutate(){
         Random random = new Random();
-        int numberOfMutations = random.nextInt(genome.size()/2);
+        int numberOfMutations = random.nextInt(settings.getMinMutationAmount(),settings.getMaxMutationAmount());
         for (int i = 0; i < numberOfMutations; i++){
             int geneIndex = random.nextInt(genome.size());
             int geneValue = random.nextInt(8);

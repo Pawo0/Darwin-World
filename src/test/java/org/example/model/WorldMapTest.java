@@ -8,8 +8,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class WorldMapTest {
 
-    Genome genome = new Genome(9);
     SimulationSettings settings = new SimulationSettings(10, 10, 0, 0, 1, false, 1, 3, 10, 1,0,0,false, 5);
+    Genome genome = new Genome(settings);
 
     @Test
     void placeAnimalSuccessfully() throws IncorrectPositionException {
@@ -76,7 +76,7 @@ class WorldMapTest {
         WorldMap worldMap = new WorldMap(settings);
         Animal animal = new Animal(genome, new Vector2d(1, 1), settings);
         worldMap.place(animal);
-        animal.substractCopulationEnergy(101);
+        animal.subtractCopulationEnergy(101);
         worldMap.checkForDeadAnimals();
         assertTrue(worldMap.isDeadAnimalAt(new Vector2d(1, 1)));
     }

@@ -4,13 +4,15 @@ import org.example.model.*;
 
 public class Main {
     public static void main(String[] args) {
-        SimulationSettings settings = new SimulationSettings(3, 3, 0, 0, 1, false, 1, 100, 10, 1,0,0,false, 5);
+        SimulationSettings settings = new SimulationSettings(20, 20, 300, 20, 70, false, 30, 15, 30, 30,0,1,false, 7);
         WorldMap map = new WorldMap(settings);
         Simulation simulation = new Simulation(settings, map);
-        for (int i = 0; i < 10; i++){
+        while (true) {
             simulation.run();
+            if (map.liveAnimalsAmount() == 0) {
+                break;
+            }
         }
-
     }
 
 }

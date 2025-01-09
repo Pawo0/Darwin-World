@@ -20,7 +20,7 @@ public class Simulation {
         for (int i = 0; i < settings.getStartAmountOfAnimals(); i++){
             int x = random.nextInt(settings.getMapWidth());
             int y = random.nextInt(settings.getMapHeight());
-            animals.add(new Animal(new Genome(settings.getGenomeLength()), new Vector2d(x, y), settings));
+            animals.add(new Animal(new Genome(settings), new Vector2d(x, y), settings));
         }
 
         for(Animal animal : animals){
@@ -34,6 +34,6 @@ public class Simulation {
         map.allAnimalsEat();
         map.animalCopulate();
         map.dailyGrassGrow();
-        map.notifyObservers("");
+        map.notifyObservers(String.valueOf(map.liveAnimalsAmount()));
     }
 }

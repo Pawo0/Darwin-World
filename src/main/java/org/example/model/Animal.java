@@ -1,12 +1,10 @@
 package org.example.model;
 
-import org.example.Simulation;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Animal implements WorldElement {
-    private final static int ENERGY_FROM_EATING = 20;
 
     private Vector2d position;
     private int energy;
@@ -55,10 +53,10 @@ public class Animal implements WorldElement {
         this.energy--;
     }
 
-    public void birthChild(Animal child, int energyToSubstract) {
+    public void birthChild(Animal child, int energyToSubtract) {
         this.children.add(child);
         this.childrenCounter++;
-        this.energy -= energyToSubstract;
+        this.energy -= energyToSubtract;
     }
 
     public void eat(){
@@ -115,8 +113,8 @@ public class Animal implements WorldElement {
         return deathDate;
     }
 
-    public void substractCopulationEnergy(int energyToSubstract) {
-        this.energy -= energyToSubstract;
+    public void subtractCopulationEnergy(int energyToSubtract) {
+        this.energy -= energyToSubtract;
     }
 
     private void bounceBack(){

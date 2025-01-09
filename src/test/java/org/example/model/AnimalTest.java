@@ -9,7 +9,7 @@ class AnimalTest {
 
     @Test
     void testAnimalInitialization() {
-        Genome genome = new Genome(8);
+        Genome genome = new Genome(settings);
         Vector2d initialPosition = new Vector2d(0, 0);
         Animal animal = new Animal(genome, initialPosition, settings);
 
@@ -25,7 +25,7 @@ class AnimalTest {
 
     @Test
     void testMove() {
-        Genome genome = new Genome(8);
+        Genome genome = new Genome(settings);
         Vector2d initialPosition = new Vector2d(0, 0);
         Animal animal = new Animal(genome, initialPosition, settings);
 
@@ -37,7 +37,7 @@ class AnimalTest {
 
     @Test
     void testEat() {
-        Genome genome = new Genome(8);
+        Genome genome = new Genome(settings);
         Vector2d position = new Vector2d(0, 0);
         Animal animal = new Animal(genome, position, settings);
 
@@ -48,7 +48,7 @@ class AnimalTest {
 
     @Test
     void testIncrementAge() {
-        Genome genome = new Genome(8);
+        Genome genome = new Genome(settings);
         Vector2d position = new Vector2d(0, 0);
         Animal animal = new Animal(genome, position, settings);
 
@@ -58,7 +58,7 @@ class AnimalTest {
 
     @Test
     void testAnimalDeath() {
-        Genome genome = new Genome(8);
+        Genome genome = new Genome(settings);
         Vector2d position = new Vector2d(0, 0);
         Animal animal = new Animal(genome, position, settings);
 
@@ -72,7 +72,7 @@ class AnimalTest {
 
     @Test
     void testChildrenManagement() {
-        Genome genome = new Genome(8);
+        Genome genome = new Genome(settings);
         Vector2d position = new Vector2d(0, 0);
         Animal parent = new Animal(genome, position, settings);
 

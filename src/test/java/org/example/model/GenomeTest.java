@@ -11,11 +11,10 @@ class GenomeTest {
     SimulationSettings settings = new SimulationSettings(10, 10, 0, 0, 1, false, 1, 3, 10, 1,0,0,false, 5);
 
     private Genome genome;
-    private final int genomeLength = 10;
 
     @BeforeEach
     void setUp() {
-        genome = new Genome(genomeLength);
+        genome = new Genome(settings);
     }
 
     @Test
@@ -23,18 +22,18 @@ class GenomeTest {
         List<Integer> genes = genome.getGenome();
 
         assertNotNull(genes, "Genome list should not be null.");
-        assertEquals(genomeLength, genes.size(), "Genome should have the correct length.");
+        assertEquals(settings.getGenomeLength(), genes.size(), "Genome should have the correct length.");
         genes.forEach(gen -> assertTrue(gen >= 0 && gen <= 7, "Each gene should be between 0 and 7."));
     }
 
     @Test
     void testGetLength() {
-        assertEquals(genomeLength, genome.getLength());
+        assertEquals(settings.getGenomeLength(), genome.getLength());
     }
 
     @Test
     void testGetGenomSize() {
-        assertEquals(genomeLength, genome.getGenomSize());
+        assertEquals(settings.getGenomeLength(), genome.getGenomSize());
     }
 
     @Test
@@ -47,16 +46,16 @@ class GenomeTest {
     @Test
     void testParentConstructor() {
         int genomeLength = 10;
-        Genome parent1 = new Genome(genomeLength);
-        Genome parent2 = new Genome(genomeLength);
+        Genome parent1 = new Genome(settings);
+        Genome parent2 = new Genome(settings);
 
         Animal animal1 = new Animal(parent1, new Vector2d(0, 0), settings);
-        animal1.substractCopulationEnergy(30); // parent1: energy = 70
+        animal1.subtractCopulationEnergy(30); // parent1: energy = 70
         Animal animal2 = new Animal(parent2, new Vector2d(0, 0), settings);
-        animal2.substractCopulationEnergy(50); // parent2: energy = 50
+        animal2.subtractCopulationEnergy(50); // parent2: energy = 50
 
 
-        Genome childGenome = new Genome(animal1, animal2);
+        Genome childGenome = new Genome(animal1, animal2, settings);
         List<Integer> childGenes = childGenome.getGenome();
 
 
