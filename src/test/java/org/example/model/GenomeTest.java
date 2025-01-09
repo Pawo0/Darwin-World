@@ -8,6 +8,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class GenomeTest {
+    SimulationSettings settings = new SimulationSettings(10, 10, 0, 0, 1, false, 1, 3, 10, 1,0,0,false, 5);
 
     private Genome genome;
     private final int genomeLength = 10;
@@ -49,9 +50,9 @@ class GenomeTest {
         Genome parent1 = new Genome(genomeLength);
         Genome parent2 = new Genome(genomeLength);
 
-        Animal animal1 = new Animal(parent1, new Vector2d(0, 0));
+        Animal animal1 = new Animal(parent1, new Vector2d(0, 0), settings);
         animal1.substractCopulationEnergy(30); // parent1: energy = 70
-        Animal animal2 = new Animal(parent2, new Vector2d(0, 0));
+        Animal animal2 = new Animal(parent2, new Vector2d(0, 0), settings);
         animal2.substractCopulationEnergy(50); // parent2: energy = 50
 
 

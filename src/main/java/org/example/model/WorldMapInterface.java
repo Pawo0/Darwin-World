@@ -10,7 +10,7 @@ public interface WorldMapInterface {
 
     void allAnimalsEat();
 
-    void grassGrows();
+    void dailyGrassGrow();
 
     void animalCopulate();
 

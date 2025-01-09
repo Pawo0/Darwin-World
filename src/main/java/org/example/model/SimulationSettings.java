@@ -1,6 +1,8 @@
 package org.example.model;
 
 public class SimulationSettings {
+    private final int mapWidth;
+    private final int mapHeight;
     private final Vector2d lowerLeft;
     private final Vector2d upperRight;
     private final int startAmountOfGrass;
@@ -17,7 +19,10 @@ public class SimulationSettings {
     private final int genomeLength;
 
 
+
     public SimulationSettings(int mapWidth, int mapHeight, int startAmountOfGrass, int energyGainedFromEating, int dailyAmountGrowingGrass, boolean lifeGivingCorpses, int startAmountOfAnimals, int startAnimalEnergy, int energyNeededToCopulate, int energyUsedToCopulate, int minMutationAmount, int maxMutationAmount, boolean specialMutation, int genomeLength) {
+        this.mapWidth = mapWidth;
+        this.mapHeight = mapHeight;
         this.lowerLeft = new Vector2d(0, 0);
         this.upperRight = new Vector2d(mapWidth - 1, mapHeight - 1);
         this.startAmountOfGrass = startAmountOfGrass;
@@ -32,6 +37,14 @@ public class SimulationSettings {
         this.maxMutationAmount = maxMutationAmount;
         this.specialMutation = specialMutation;
         this.genomeLength = genomeLength;
+    }
+
+    public int getMapWidth() {
+        return mapWidth;
+    }
+
+    public int getMapHeight() {
+        return mapHeight;
     }
 
     public Boundary getBoundary() {

@@ -22,12 +22,9 @@ public class WorldMap implements WorldMapInterface {
     private final Boundary boundary;
     private final int energyNeededToCopulate;
     private final int dailyAmountGrowingGrass;
+    private final SimulationSettings settings;
 
     private List<MapChangeListener> observers = new ArrayList<MapChangeListener>();
-
-    public WorldMap() {
-        this(new SimulationSettings(10, 10, 0, 0, 10, false, 0, 0, 20, 0, 0, 0, false, 0));
-    }
 
     public WorldMap(SimulationSettings settings) {
         this.id = UUID.randomUUID();
@@ -41,8 +38,9 @@ public class WorldMap implements WorldMapInterface {
         this.boundary = settings.getBoundary();
         this.energyNeededToCopulate = settings.getEnergyNeededToCopulate();
         this.dailyAmountGrowingGrass = settings.getDailyAmountGrowingGrass();
-
+        this.settings = settings;
         addGrassGrowingChance();
+        grassGrows(settings.getStartAmountOfGrass());
     }
 
     public Map<Vector2d, Grass> getGrasses() {
@@ -83,18 +81,6 @@ public class WorldMap implements WorldMapInterface {
     }
 
 
-//    @Override
-//    public void allAnimalsMove() {
-//        for (PriorityQueue<Animal> animals : liveAnimals.values()) {
-//            for (Animal animal : animals) {
-//                liveAnimals.get(animal.getPosition()).remove(animal);
-//                animal.move();
-//                this.place(animal);
-//            }
-//        }
-//        notifyObservers("chuj");
-//    }
-
     @Override
     public void allAnimalsMove() {
         List<Animal> animalsToMove = new ArrayList<>();
@@ -106,7 +92,6 @@ public class WorldMap implements WorldMapInterface {
             animal.move();
             this.place(animal);
         }
-        notifyObservers("chuj");
     }
 
     @Override
@@ -128,9 +113,14 @@ public class WorldMap implements WorldMapInterface {
     }
 
     @Override
-    public void grassGrows() {
+    public void dailyGrassGrow() {
+        grassGrows(dailyAmountGrowingGrass);
+    }
+
+    public void grassGrows(int grassAmount) {
         int i = 0;
-        while (i < dailyAmountGrowingGrass) {
+//        System.out.println("chuj w dupie chlupie: " + grassAmount);
+        while (i < grassAmount) {
             if (fieldsWithGrassGrowPriority.isEmpty()) {
                 if (fieldsWithoutGrassGrowPriority.isEmpty()) {
                     break;
@@ -187,7 +177,7 @@ public class WorldMap implements WorldMapInterface {
         Vector2d position = animal1.getPosition();
         animal1.substractCopulationEnergy(energyNeededToCopulate);
         animal2.substractCopulationEnergy(energyNeededToCopulate);
-        Animal child = new Animal(new Genome(animal1, animal2), position);
+        Animal child = new Animal(new Genome(animal1, animal2), position, this.settings);
         animal1.birthChild(child, energyNeededToCopulate);
         animal2.birthChild(child, energyNeededToCopulate);
         return child;
@@ -257,6 +247,6 @@ public class WorldMap implements WorldMapInterface {
         }
     }
     public String toString() {
-        return new MapVisualizer(this).draw(getCurrentBounds().lowerLeft(), getCurrentBounds().upperRight());
+        return new MapVisualizer(this).draw(boundary.lowerLeft(), boundary.upperRight());
     }
 }

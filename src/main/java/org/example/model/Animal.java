@@ -1,5 +1,7 @@
 package org.example.model;
 
+import org.example.Simulation;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,14 +18,17 @@ public class Animal implements WorldElement {
     private Genome genotype;
     private int geneIndex;
     private int grassEaten;
+    private SimulationSettings settings;
 
 
-    public Animal(Genome genotype, Vector2d position) {
+    public Animal(Genome genotype,Vector2d position, SimulationSettings settings) {
+
         this.position = position;
-        this.energy = 100;
+        this.energy = settings.getStartAnimalEnergy();
         this.childrenCounter = 0;
         this.age = 0;
         this.children = new ArrayList<>();
+        this.settings = settings;
 
         this.mapDirection = MapDirection.NORTH;
         this.genotype = genotype;
@@ -35,8 +40,17 @@ public class Animal implements WorldElement {
 
     public void move() {
         MapDirection newDirection = this.mapDirection.rotate(genotype.getGen(geneIndex%genotype.getGenomSize()));
-        this.mapDirection = newDirection;
-        this.position = this.position.add(mapDirection.toUnitVector());
+        this.mapDirection = this.mapDirection.rotate(genotype.getGen(geneIndex%genotype.getGenomSize()));
+        Vector2d newPosition = this.position.add(newDirection.toUnitVector());
+        if (newPosition.getY() > settings.getMapHeight()-1 || newPosition.getY() < 0){
+            bounceBack();
+        }else if (newPosition.getX() > settings.getMapWidth()-1 || newPosition.getX() < 0){
+            this.position = new Vector2d((settings.getMapWidth() + newPosition.getX())%settings.getMapWidth(), newPosition.getY());
+        }
+        else {
+            this.position = newPosition;
+        }
+
         this.geneIndex++;
         this.energy--;
     }
@@ -48,7 +62,7 @@ public class Animal implements WorldElement {
     }
 
     public void eat(){
-        this.energy += ENERGY_FROM_EATING;
+        this.energy += settings.getEnergyGainedFromEating();
         this.grassEaten++;
     }
 
@@ -103,6 +117,10 @@ public class Animal implements WorldElement {
 
     public void substractCopulationEnergy(int energyToSubstract) {
         this.energy -= energyToSubstract;
+    }
+
+    private void bounceBack(){
+        this.mapDirection = this.mapDirection.rotate(4);
     }
 
     @Override

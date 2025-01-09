@@ -5,12 +5,13 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AnimalTest {
+    SimulationSettings settings = new SimulationSettings(10, 10, 0, 0, 1, false, 1, 3, 10, 1,0,0,false, 5);
 
     @Test
     void testAnimalInitialization() {
         Genome genome = new Genome(8);
         Vector2d initialPosition = new Vector2d(0, 0);
-        Animal animal = new Animal(genome, initialPosition);
+        Animal animal = new Animal(genome, initialPosition, settings);
 
         assertEquals(initialPosition, animal.getPosition());
         assertEquals(100, animal.getEnergy());
@@ -26,7 +27,7 @@ class AnimalTest {
     void testMove() {
         Genome genome = new Genome(8);
         Vector2d initialPosition = new Vector2d(0, 0);
-        Animal animal = new Animal(genome, initialPosition);
+        Animal animal = new Animal(genome, initialPosition, settings);
 
         animal.move();
         assertNotEquals(initialPosition, animal.getPosition());
@@ -38,7 +39,7 @@ class AnimalTest {
     void testEat() {
         Genome genome = new Genome(8);
         Vector2d position = new Vector2d(0, 0);
-        Animal animal = new Animal(genome, position);
+        Animal animal = new Animal(genome, position, settings);
 
         animal.eat();
         assertEquals(120, animal.getEnergy());
@@ -49,7 +50,7 @@ class AnimalTest {
     void testIncrementAge() {
         Genome genome = new Genome(8);
         Vector2d position = new Vector2d(0, 0);
-        Animal animal = new Animal(genome, position);
+        Animal animal = new Animal(genome, position, settings);
 
         animal.incrementAge();
         assertEquals(1, animal.getAge());
@@ -59,7 +60,7 @@ class AnimalTest {
     void testAnimalDeath() {
         Genome genome = new Genome(8);
         Vector2d position = new Vector2d(0, 0);
-        Animal animal = new Animal(genome, position);
+        Animal animal = new Animal(genome, position, settings);
 
         animal.incrementAge();
         animal.incrementAge();
@@ -73,9 +74,9 @@ class AnimalTest {
     void testChildrenManagement() {
         Genome genome = new Genome(8);
         Vector2d position = new Vector2d(0, 0);
-        Animal parent = new Animal(genome, position);
+        Animal parent = new Animal(genome, position, settings);
 
-        Animal child = new Animal(genome, position);
+        Animal child = new Animal(genome, position, settings);
         parent.birthChild(child, 30);
 
         assertEquals(70, parent.getEnergy());
