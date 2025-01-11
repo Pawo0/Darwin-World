@@ -79,6 +79,8 @@ public class MapVisualizer {
             object = this.map.animalsAt(currentPosition).peek();
         } else if (this.map.isGrassAt(currentPosition)) {
             object = this.map.getGrassAt(currentPosition);
+        } else if (this.map.isDeadAnimalAt(currentPosition)) {
+            object = this.map.getDeadAnimals().get(currentPosition).peek();
         }
         if (object != null) {
             return object.toString();

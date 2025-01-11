@@ -11,29 +11,24 @@ public class Simulation {
     private WorldMap map;
     private List<Animal> animals;
 
-    public Simulation(SimulationSettings settings, WorldMap map){
+    public Simulation(SimulationSettings settings, WorldMap map) {
         this.map = map;
         this.map.addObserver(new ConsoleMapDisplay());
 
         Random random = new Random();
         this.animals = new ArrayList<Animal>();
-        for (int i = 0; i < settings.getStartAmountOfAnimals(); i++){
+        for (int i = 0; i < settings.getStartAmountOfAnimals(); i++) {
             int x = random.nextInt(settings.getMapWidth());
             int y = random.nextInt(settings.getMapHeight());
             animals.add(new Animal(new Genome(settings), new Vector2d(x, y), settings));
         }
 
-        for(Animal animal : animals){
+        for (Animal animal : animals) {
             map.place(animal);
         }
     }
 
-    public void run(){
-        map.checkForDeadAnimals();
-        map.allAnimalsMove();
-        map.allAnimalsEat();
-        map.animalCopulate();
-        map.dailyGrassGrow();
-        map.notifyObservers(String.valueOf(map.liveAnimalsAmount()));
+    public void run() {
+        map.nextDay();
     }
 }

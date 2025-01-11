@@ -60,6 +60,7 @@ public class Animal implements WorldElement {
     }
 
     public void eat(){
+        System.out.println(this + " is eating");
         this.energy += settings.getEnergyGainedFromEating();
         this.grassEaten++;
     }
@@ -123,6 +124,6 @@ public class Animal implements WorldElement {
 
     @Override
     public String toString(){
-        return "A";
+        return this.energy >= 0 ? String.valueOf(this.energy) : "X";
     }
 }

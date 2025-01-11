@@ -5,26 +5,34 @@ import org.example.MapVisualizer;
 import java.util.*;
 
 public class WorldMap implements WorldMapInterface {
-    private final UUID id;
-    private final Map<Vector2d, PriorityQueue<Animal>> liveAnimals;
-    private final Map<Vector2d, PriorityQueue<Animal>> deadAnimals;
+    protected final UUID id;
+    protected final Map<Vector2d, PriorityQueue<Animal>> liveAnimals;
+
+    public Map<Vector2d, PriorityQueue<Animal>> getDeadAnimals() {
+        return deadAnimals;
+    }
+
+    protected final Map<Vector2d, PriorityQueue<Animal>> deadAnimals;
+
+    protected int currentDay = 0;
 
 
-    private final Map<Vector2d, Grass> grasses;
+    protected final Map<Vector2d, Grass> grasses;
 
-    private final Comparator<Animal> animalComparator = new AnimalComparator();
-
-    private final Map<Vector2d, Integer> chanceOfGrassGrowing;
-    private final List<Vector2d> fieldsWithGrassGrowPriority;
-    private final List<Vector2d> fieldsWithoutGrassGrowPriority;
+    protected final Comparator<Animal> animalComparator = new AnimalComparator();
 
 
-    private final Boundary boundary;
-    private final int energyNeededToCopulate;
-    private final int dailyAmountGrowingGrass;
-    private final SimulationSettings settings;
+    protected final List<Vector2d> fieldsWithGrassGrowPriority;
+    protected final List<Vector2d> fieldsWithoutGrassGrowPriority;
 
-    private List<MapChangeListener> observers = new ArrayList<MapChangeListener>();
+
+    protected final Boundary boundary;
+    protected final int energyNeededToCopulate;
+    protected final int energyUsedToCopulate;
+    protected final int dailyAmountGrowingGrass;
+    protected final SimulationSettings settings;
+
+    protected List<MapChangeListener> observers = new ArrayList<MapChangeListener>();
 
     public WorldMap(SimulationSettings settings) {
         this.id = UUID.randomUUID();
@@ -33,51 +41,85 @@ public class WorldMap implements WorldMapInterface {
         this.grasses = new HashMap<>();
         this.fieldsWithGrassGrowPriority = new ArrayList<>();
         this.fieldsWithoutGrassGrowPriority = new ArrayList<>();
-        this.chanceOfGrassGrowing = new HashMap<>();
 
         this.boundary = settings.getBoundary();
         this.energyNeededToCopulate = settings.getEnergyNeededToCopulate();
+        this.energyUsedToCopulate = settings.getEnergyUsedToCopulate();
         this.dailyAmountGrowingGrass = settings.getDailyAmountGrowingGrass();
         this.settings = settings;
-        addGrassGrowingChance();
+        initGrassGrowingChance();
         grassGrows(settings.getStartAmountOfGrass());
+    }
+
+    public void nextDay() {
+        currentDay++;
+        allAnimalsAgeUp();
+        checkForDeadAnimals();
+        allAnimalsMove();
+        allAnimalsEat();
+        animalCopulate();
+        dailyGrassGrow();
+        notifyObservers(String.valueOf(liveAnimalsAmount()));
     }
 
     public Map<Vector2d, Grass> getGrasses() {
         return grasses;
     }
 
-    private void addGrassGrowingChance() {
-        for (int x = boundary.lowerLeft().getX(); x <= boundary.upperRight().getX(); x++) {
-            for (int y = boundary.lowerLeft().getY(); y <= boundary.upperRight().getY(); y++) {
-                addFieldsGrassGrowingChance(x, y);
+    protected void allAnimalsAgeUp(){
+        for (PriorityQueue<Animal> animals : liveAnimals.values()) {
+            for (Animal animal : animals) {
+                animal.incrementAge();
             }
         }
     }
 
-    private void addFieldsGrassGrowingChance(int x, int y) {
-        int middleEquator = (boundary.upperRight().getX() + boundary.lowerLeft().getX()) / 2;
-        int equatorTop = middleEquator + middleEquator / 10;
-        int equatorBottom = middleEquator - middleEquator / 10;
-        Vector2d position = new Vector2d(x, y);
-
-        if (y > equatorTop || y < equatorBottom) {
-            fieldsWithoutGrassGrowPriority.add(position);
-        } else {
-            fieldsWithGrassGrowPriority.add(position);
+    protected void initGrassGrowingChance() {
+//        for every field in the map add chance to grow grass
+        for (int x = boundary.lowerLeft().getX(); x <= boundary.upperRight().getX(); x++) {
+            for (int y = boundary.lowerLeft().getY(); y <= boundary.upperRight().getY(); y++) {
+                addFieldsWithGrassGrowingChance(x, y);
+            }
         }
     }
 
-    public Map<Vector2d, Integer> getChanceOfGrassGrowing() {
-        return chanceOfGrassGrowing;
+    protected void addFieldsWithGrassGrowingChance(int x, int y) {
+//        most often used after eating grass - (zjesz trawe, to znowu jest szansa ze urosnie nastepna)
+        Vector2d position = new Vector2d(x, y);
+        if (isWithinEquator(position)) {
+            fieldsWithGrassGrowPriority.add(position);
+        } else {
+            fieldsWithoutGrassGrowPriority.add(position);
+        }
     }
+
+
+    protected boolean isWithinEquator(Vector2d position) {
+        int y = position.getY();
+        int middleEquator = (boundary.upperRight().getX() + boundary.lowerLeft().getX() + 1) / 2;
+        int equatorTop = middleEquator + middleEquator / 10;
+        int equatorBottom = middleEquator - middleEquator / 10;
+        return y >= equatorBottom && y <= equatorTop;
+    }
+
 
     @Override
     public boolean place(Animal animal) {
+        if (animal.getPosition().getX() < boundary.lowerLeft().getX() || animal.getPosition().getX() > boundary.upperRight().getX() || animal.getPosition().getY() < boundary.lowerLeft().getY() || animal.getPosition().getY() > boundary.upperRight().getY()) {
+            return false;
+        }
         Vector2d position = animal.getPosition();
         liveAnimals.putIfAbsent(position, new PriorityQueue<>(animalComparator));
         liveAnimals.get(position).add(animal);
         return true;
+    }
+
+    public void raise(Animal animal) {
+        Vector2d position = animal.getPosition();
+        liveAnimals.get(position).remove(animal);
+        if (liveAnimals.get(position).isEmpty()) {
+            liveAnimals.remove(position);
+        }
     }
 
 
@@ -88,27 +130,28 @@ public class WorldMap implements WorldMapInterface {
             animalsToMove.addAll(animals);
         }
         for (Animal animal : animalsToMove) {
-            liveAnimals.get(animal.getPosition()).remove(animal);
+//            liveAnimals.get(animal.getPosition()).remove(animal);
+            raise(animal);
+//            System.out.println("animal moved from: " + animal.getPosition());
             animal.move();
+//            System.out.println("animal moved to: " + animal.getPosition());
             this.place(animal);
         }
     }
 
     @Override
     public void allAnimalsEat() {
-//        jesli na polu jest wiecej zwierzat, to je tylko pierwszy - czyli ten co ma najwiecej energii - moze zrobimy od tylu?
         for (PriorityQueue<Animal> animals : liveAnimals.values()) {
-            for (Animal animal : animals) {
-                animalEat(animal);
-            }
+            if (!animals.isEmpty()) animalEat(animals.peek());
         }
     }
 
-    private void animalEat(Animal animal){
+    protected void animalEat(Animal animal) {
         if (isGrassAt(animal.getPosition())) {
             animal.eat();
+//            System.out.println("grass eaten at: " + animal.getPosition());
             grasses.remove(animal.getPosition());
-            addFieldsGrassGrowingChance(animal.getPosition().getX(), animal.getPosition().getY());
+            addFieldsWithGrassGrowingChance(animal.getPosition().getX(), animal.getPosition().getY());
         }
     }
 
@@ -119,22 +162,21 @@ public class WorldMap implements WorldMapInterface {
 
     public void grassGrows(int grassAmount) {
         int i = 0;
-//        System.out.println("chuj w dupie chlupie: " + grassAmount);
         while (i < grassAmount) {
             if (fieldsWithGrassGrowPriority.isEmpty()) {
                 if (fieldsWithoutGrassGrowPriority.isEmpty()) {
                     break;
                 } else {
-                    grassGrowOnLowPriorityFields();
+                    grassGrowOnFields(fieldsWithoutGrassGrowPriority);
                 }
             } else if (fieldsWithoutGrassGrowPriority.isEmpty()) {
-                grassGrowOnHighPriorityFields();
+                grassGrowOnFields(fieldsWithGrassGrowPriority);
             } else {
                 double priority = (Math.random() * 100);
                 if (priority <= 80) {
-                    grassGrowOnHighPriorityFields();
+                    grassGrowOnFields(fieldsWithGrassGrowPriority);
                 } else {
-                    grassGrowOnLowPriorityFields();
+                    grassGrowOnFields(fieldsWithoutGrassGrowPriority);
                 }
             }
 //            zawsze rosnie bo w fields zawsze jest pole gdzie moze urosnac trawa
@@ -142,18 +184,12 @@ public class WorldMap implements WorldMapInterface {
         }
     }
 
-    private void grassGrowOnLowPriorityFields() {
-        int randomIndex = (int) (Math.random() * fieldsWithoutGrassGrowPriority.size());
-        Vector2d position = fieldsWithoutGrassGrowPriority.get(randomIndex);
+    protected void grassGrowOnFields(List<Vector2d> fields) {
+        int randomIndex = (int) (Math.random() * fields.size());
+        Vector2d position = fields.get(randomIndex);
+        System.out.println("grass planted at: " + position);
         grasses.put(position, new Grass(position));
-        fieldsWithoutGrassGrowPriority.remove(position);
-    }
-
-    private void grassGrowOnHighPriorityFields() {
-        int randomIndex = (int) (Math.random() * fieldsWithGrassGrowPriority.size());
-        Vector2d position = fieldsWithGrassGrowPriority.get(randomIndex);
-        grasses.put(position, new Grass(position));
-        fieldsWithGrassGrowPriority.remove(position);
+        fields.remove(position);
     }
 
     @Override
@@ -161,7 +197,7 @@ public class WorldMap implements WorldMapInterface {
         Animal partner;
         for (PriorityQueue<Animal> animals : liveAnimals.values()) {
             for (Animal animal : animals) {
-                if (animal.getEnergy() > energyNeededToCopulate) {
+                if (animal.getEnergy() >= energyNeededToCopulate) {
                     partner = findPartner(animal, animals);
                     if (partner != null) {
                         Animal child = copulate(animal, partner);
@@ -175,15 +211,13 @@ public class WorldMap implements WorldMapInterface {
 
     public Animal copulate(Animal animal1, Animal animal2) {
         Vector2d position = animal1.getPosition();
-        animal1.subtractCopulationEnergy(energyNeededToCopulate);
-        animal2.subtractCopulationEnergy(energyNeededToCopulate);
         Animal child = new Animal(new Genome(animal1, animal2, this.settings), position, this.settings);
-        animal1.birthChild(child, energyNeededToCopulate);
-        animal2.birthChild(child, energyNeededToCopulate);
+        animal1.birthChild(child, energyUsedToCopulate);
+        animal2.birthChild(child, energyUsedToCopulate);
         return child;
     }
 
-    public Animal findPartner(Animal animal1, PriorityQueue<Animal> animals) {
+    protected Animal findPartner(Animal animal1, PriorityQueue<Animal> animals) {
         for (Animal animal : animals) {
             if (!animal.equals(animal1) && animal.getEnergy() > energyNeededToCopulate) {
                 return animal;
@@ -223,13 +257,14 @@ public class WorldMap implements WorldMapInterface {
         for (PriorityQueue<Animal> animals : liveAnimals.values()) {
             for (Animal animal : animals) {
                 if (animal.getEnergy() < 0) {
+                    animal.animalDeath();
                     animalsToRemove.add(animal);
                 }
             }
         }
         for (Animal animal : animalsToRemove) {
             Vector2d position = animal.getPosition();
-            liveAnimals.get(position).remove(animal);
+            raise(animal);
             deadAnimals.putIfAbsent(position, new PriorityQueue<>(animalComparator));
             deadAnimals.get(position).add(animal);
         }
@@ -250,6 +285,7 @@ public class WorldMap implements WorldMapInterface {
             observer.mapChanged(this, message);
         }
     }
+
     public String toString() {
         return new MapVisualizer(this).draw(boundary.lowerLeft(), boundary.upperRight());
     }
