@@ -114,13 +114,22 @@ public class WorldMap implements WorldMapInterface {
         return true;
     }
 
-    public void raise(Animal animal) {
+    public void removeLiveAnimal(Animal animal) {
         Vector2d position = animal.getPosition();
         liveAnimals.get(position).remove(animal);
         if (liveAnimals.get(position).isEmpty()) {
             liveAnimals.remove(position);
         }
     }
+
+    public void removeDeadAnimal(Animal animal) {
+        Vector2d position = animal.getPosition();
+        deadAnimals.get(position).remove(animal);
+        if (deadAnimals.get(position).isEmpty()) {
+            deadAnimals.remove(position);
+        }
+    }
+
 
 
     @Override
@@ -131,7 +140,7 @@ public class WorldMap implements WorldMapInterface {
         }
         for (Animal animal : animalsToMove) {
 //            liveAnimals.get(animal.getPosition()).remove(animal);
-            raise(animal);
+            removeLiveAnimal(animal);
 //            System.out.println("animal moved from: " + animal.getPosition());
             animal.move();
 //            System.out.println("animal moved to: " + animal.getPosition());
@@ -187,7 +196,7 @@ public class WorldMap implements WorldMapInterface {
     protected void grassGrowOnFields(List<Vector2d> fields) {
         int randomIndex = (int) (Math.random() * fields.size());
         Vector2d position = fields.get(randomIndex);
-        System.out.println("grass planted at: " + position);
+//        System.out.println("grass planted at: " + position);
         grasses.put(position, new Grass(position));
         fields.remove(position);
     }
@@ -264,7 +273,7 @@ public class WorldMap implements WorldMapInterface {
         }
         for (Animal animal : animalsToRemove) {
             Vector2d position = animal.getPosition();
-            raise(animal);
+            removeLiveAnimal(animal);
             deadAnimals.putIfAbsent(position, new PriorityQueue<>(animalComparator));
             deadAnimals.get(position).add(animal);
         }

@@ -24,15 +24,20 @@ public class WorldMapDeadAnimals extends WorldMap {
 
     public void clearDeadBodies() {
 //    usuwanie starszych cial niz 5 dni, czyszczenie tmpFieldsWithPriority i dodanie ich na nowo (z obkrojonej listy)
+        List<Animal> animalsToRemove = new ArrayList<>();
         for (PriorityQueue<Animal> animals : this.deadAnimals.values()) {
             for (Animal animal : animals) {
                 if (animal.getDeathDate() < this.currentDay - 10) {
-                    System.out.println("Usuwam martwe zwierze");
-                    System.out.println(animal.getDeathDate());
-                    System.out.println(this.currentDay);
-                    this.deadAnimals.get(animal.getPosition()).remove(animal);
+//                    System.out.println("Usuwam martwe zwierze");
+//                    System.out.println(animal.getDeathDate());
+//                    System.out.println(this.currentDay);
+                    animalsToRemove.add(animal);
                 }
             }
+        }
+//        nie wiem czy taka optymalna wersja usuwania ale cusz
+        for (Animal animal : animalsToRemove) {
+            removeDeadAnimal(animal);
         }
         tmpFieldsWithPriority.clear();
         for (Vector2d position : this.deadAnimals.keySet()) {
@@ -51,6 +56,7 @@ public class WorldMapDeadAnimals extends WorldMap {
                 } else if (!add && i >= 0 && i < this.width && j >= 0 && j < this.height){
 //                    jesli pole aktualnie nie jest uwzgledniane, remove nic nie zrobi
                     tmpFieldsWithPriority.remove(new Vector2d(i, j));
+
                 }
             }
         }
