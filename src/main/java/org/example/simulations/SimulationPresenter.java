@@ -7,10 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
-import org.example.model.MapChangeListener;
-import org.example.model.Vector2d;
-import org.example.model.WorldMap;
-import org.example.model.WorldMapDeadAnimals;
+import org.example.model.*;
 
 import java.util.List;
 
@@ -29,7 +26,7 @@ public class SimulationPresenter implements MapChangeListener {
     @FXML
     private void initialize() {
         System.out.println("SimulationPresenter initialized");
-        settings = new SimulationSettings(20, 20, 300, 16, 40, true, 200, 15, 30, 30, 0, 1, true, 7, 100);
+        settings = new SimulationSettings(20, 20, 300, 16, 40, true, 200, 15, 30, 30, 0, 1, MutationType.DEFAULT, 7, 100);
         if (settings.isLifeGivingCorpses()) {
             map = new WorldMapDeadAnimals(settings);
         } else {

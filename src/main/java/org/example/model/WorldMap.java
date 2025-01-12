@@ -124,12 +124,12 @@ public class WorldMap implements WorldMapInterface {
     }
 
     public void removeDeadAnimal(Animal animal) {
-        System.out.println("removing dead animal");
+//        System.out.println("removing dead animal");
         Vector2d position = animal.getPosition();
         deadAnimals.get(position).remove(animal);
         if (deadAnimals.get(position).isEmpty()) {
             deadAnimals.remove(position);
-            System.out.println("dead animals empty");
+//            System.out.println("dead animals empty");
         }
     }
 
@@ -223,7 +223,11 @@ public class WorldMap implements WorldMapInterface {
 
     public Animal copulate(Animal animal1, Animal animal2) {
         Vector2d position = animal1.getPosition();
-        Animal child = new Animal(new Genome(animal1, animal2, this.settings), position, this.settings);
+        Genome genome = switch (settings.isSpecialMutation()) {
+            case SWAP -> new GenomeSwap(settings);
+            case DEFAULT -> new Genome(settings);
+        };
+        Animal child = new Animal(genome, position, this.settings);
         animal1.birthChild(child, energyUsedToCopulate);
         animal2.birthChild(child, energyUsedToCopulate);
         return child;

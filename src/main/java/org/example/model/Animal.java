@@ -39,8 +39,8 @@ public class Animal implements WorldElement {
 
 
     public void move() {
-        MapDirection newDirection = this.mapDirection.rotate(genotype.getGen(geneIndex%genotype.getGenomSize()));
-        this.mapDirection = this.mapDirection.rotate(genotype.getGen(geneIndex%genotype.getGenomSize()));
+        MapDirection newDirection = this.mapDirection.rotate(genotype.getGen(geneIndex%genotype.getGenomeSize()));
+        this.mapDirection = this.mapDirection.rotate(genotype.getGen(geneIndex%genotype.getGenomeSize()));
         Vector2d newPosition = this.position.add(newDirection.toUnitVector());
         if (newPosition.getY() > settings.getMapHeight()-1 || newPosition.getY() < 0){
             bounceBack();

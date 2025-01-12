@@ -27,7 +27,11 @@ public class Simulation implements Runnable {
         for (int i = 0; i < settings.getStartAmountOfAnimals(); i++) {
             int x = random.nextInt(settings.getMapWidth());
             int y = random.nextInt(settings.getMapHeight());
-            animals.add(new Animal(new Genome(settings), new Vector2d(x, y), settings));
+            Genome genome = switch (settings.isSpecialMutation()) {
+                case SWAP -> new GenomeSwap(settings);
+                case DEFAULT -> new Genome(settings);
+            };
+            animals.add(new Animal(genome, new Vector2d(x, y), settings));
         }
 
         for (Animal animal : animals) {

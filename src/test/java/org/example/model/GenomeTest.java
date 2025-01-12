@@ -9,7 +9,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class GenomeTest {
-    SimulationSettings settings = new SimulationSettings(10, 10, 0, 0, 1, false, 1, 3, 10, 1,0,0,false, 5, 400);
+    SimulationSettings settings = new SimulationSettings(10, 10, 0, 0, 1, false, 1, 3, 10, 1,0,1,MutationType.DEFAULT, 10, 400);
 
     private Genome genome;
 
@@ -33,8 +33,8 @@ class GenomeTest {
     }
 
     @Test
-    void testGetGenomSize() {
-        assertEquals(settings.getGenomeLength(), genome.getGenomSize());
+    void testGetGenomeSize() {
+        assertEquals(settings.getGenomeLength(), genome.getGenomeSize());
     }
 
     @Test

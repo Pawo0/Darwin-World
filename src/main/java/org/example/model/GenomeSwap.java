@@ -16,7 +16,7 @@ public class GenomeSwap extends Genome{
     @Override
     protected void mutate() {
         Random random = new Random();
-        int numberOfMutations = random.nextInt(this.getLength()-1);
+        int numberOfMutations = random.nextInt(settings.getMinMutationAmount(),settings.getMaxMutationAmount());
         for (int i = 0; i < numberOfMutations; i++){
             boolean isSwap = random.nextBoolean();
             if (isSwap){

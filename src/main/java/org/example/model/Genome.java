@@ -9,7 +9,7 @@ import java.util.Random;
 public class Genome {
     private List<Integer> genome;
     private int length;
-    private SimulationSettings settings;
+    protected SimulationSettings settings;
 
     public Genome(SimulationSettings settings) {
         this.settings = settings;
@@ -79,7 +79,7 @@ public class Genome {
         return genome.get(genIndex);
     }
 
-    public int getGenomSize() {
+    public int getGenomeSize() {
         return genome.size();
     }
 }

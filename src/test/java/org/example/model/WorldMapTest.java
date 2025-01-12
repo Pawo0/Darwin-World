@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class WorldMapTest {
 
-    SimulationSettings settings = new SimulationSettings(10, 10, 0, 0, 1, false, 1, 3, 10, 1,0,0,false, 5, 400);
+    SimulationSettings settings = new SimulationSettings(10, 10, 0, 20, 1, false, 1, 100, 10, 1,0,0,MutationType.DEFAULT, 5, 400);
     Genome genome = new Genome(settings);
 
     @Test
@@ -56,6 +56,7 @@ class WorldMapTest {
     @Test
     void grassGrowsSuccessfully() {
         WorldMap worldMap = new WorldMap(settings);
+        worldMap.grassGrows(1);
         assertFalse(worldMap.getGrasses().isEmpty());
     }
 
