@@ -1,6 +1,7 @@
 package org.example.model;
 
 import org.example.MapVisualizer;
+import org.example.simulations.SimulationSettings;
 
 import java.util.*;
 
@@ -32,7 +33,7 @@ public class WorldMap implements WorldMapInterface {
     protected final int dailyAmountGrowingGrass;
     protected final SimulationSettings settings;
 
-    protected List<MapChangeListener> observers = new ArrayList<MapChangeListener>();
+    protected List<MapChangeListener> observers = new ArrayList<>();
 
     public WorldMap(SimulationSettings settings) {
         this.id = UUID.randomUUID();
@@ -123,10 +124,12 @@ public class WorldMap implements WorldMapInterface {
     }
 
     public void removeDeadAnimal(Animal animal) {
+        System.out.println("removing dead animal");
         Vector2d position = animal.getPosition();
         deadAnimals.get(position).remove(animal);
         if (deadAnimals.get(position).isEmpty()) {
             deadAnimals.remove(position);
+            System.out.println("dead animals empty");
         }
     }
 
