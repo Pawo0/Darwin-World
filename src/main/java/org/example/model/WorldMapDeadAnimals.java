@@ -43,22 +43,17 @@ public class WorldMapDeadAnimals extends WorldMap {
         }
         tmpFieldsWithPriority.clear();
         for (Vector2d position : this.deadAnimals.keySet()) {
-            updateGrassPriorityAroundDeadBody(position, true);
+            addGrassPriorityAroundDeadBody(position);
         }
     }
 
-    private void updateGrassPriorityAroundDeadBody(Vector2d position, boolean add){
-//        add - true jesli dodajemy pola w kwadracie wokol trupa, false jesli usuwamy
+    private void addGrassPriorityAroundDeadBody(Vector2d position){
         int x = position.getX();
         int y = position.getY();
         for (int i = x - 2; i <= x + 2; i++) {
             for (int j = y - 2; j <= y + 2; j++) {
-                if (add && i >= 0 && i < this.width && j >= 0 && j < this.height && !this.isGrassAt(new Vector2d(i, j)) && !this.fieldsWithGrassGrowPriority.contains(new Vector2d(i, j))){
+                if (i >= 0 && i < this.width && j >= 0 && j < this.height && !this.isGrassAt(new Vector2d(i, j)) && !this.fieldsWithGrassGrowPriority.contains(new Vector2d(i, j))){
                     tmpFieldsWithPriority.add(new Vector2d(i, j));
-                } else if (!add && i >= 0 && i < this.width && j >= 0 && j < this.height){
-//                    jesli pole aktualnie nie jest uwzgledniane, remove nic nie zrobi
-                    tmpFieldsWithPriority.remove(new Vector2d(i, j));
-
                 }
             }
         }
@@ -84,36 +79,21 @@ public class WorldMapDeadAnimals extends WorldMap {
         super.addFieldsWithGrassGrowingChance(x, y);
         Vector2d position = new Vector2d(x, y);
         if (isCloseToDeadAnimal(position)) {
-            updateGrassPriorityAroundDeadBody(position, true);
+            addGrassPriorityAroundDeadBody(position);
         }
     }
 
     @Override
     public void grassGrows(int grassAmount) {
-//        prawdopodonie mozna to zrobic lepiej, np tylko w worldmap z uzyciem instanceof
-        int i = 0;
         List<Vector2d> allFieldsWithPriority = new ArrayList<>();
         if (tmpFieldsWithPriority != null) allFieldsWithPriority.addAll(tmpFieldsWithPriority);
         if (fieldsWithGrassGrowPriority != null) allFieldsWithPriority.addAll(fieldsWithGrassGrowPriority);
-        while (i < grassAmount) {
-            if (allFieldsWithPriority.isEmpty()) {
-                if (fieldsWithoutGrassGrowPriority.isEmpty()) {
-                    break;
-                } else {
-                    grassGrowOnFields(fieldsWithoutGrassGrowPriority);
-                }
-            } else if (fieldsWithoutGrassGrowPriority.isEmpty()) {
-                grassGrowOnFields(allFieldsWithPriority);
-            } else {
-                double priority = (Math.random() * 100);
-                if (priority <= 80) {
-                    grassGrowOnFields(allFieldsWithPriority);
-                } else {
-                    grassGrowOnFields(fieldsWithoutGrassGrowPriority);
-                }
-            }
-            i++;
-        }
+        generateGrassFromGivenFields(allFieldsWithPriority, grassAmount);
     }
 
+    @Override
+    protected void removeGrassFromFields(Vector2d position){;
+        if (tmpFieldsWithPriority != null) tmpFieldsWithPriority.remove(position);
+        super.removeGrassFromFields(position);
+    }
 }

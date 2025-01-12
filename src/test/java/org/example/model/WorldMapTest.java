@@ -33,7 +33,7 @@ class WorldMapTest {
         WorldMap worldMap = new WorldMap(settings);
         Animal animal = new Animal(genome, new Vector2d(1, 1), settings);
         worldMap.place(animal);
-        worldMap.allAnimalsMove();
+        worldMap.nextDay();
         assertNotEquals(new Vector2d(1, 1), animal.getPosition());
     }
 

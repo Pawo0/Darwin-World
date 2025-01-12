@@ -67,7 +67,7 @@ public class WorldMap implements WorldMapInterface {
         return grasses;
     }
 
-    protected void allAnimalsAgeUp(){
+    protected void allAnimalsAgeUp() {
         for (PriorityQueue<Animal> animals : liveAnimals.values()) {
             for (Animal animal : animals) {
                 animal.incrementAge();
@@ -97,7 +97,7 @@ public class WorldMap implements WorldMapInterface {
 
     protected boolean isWithinEquator(Vector2d position) {
         int y = position.getY();
-        int middleEquator = (boundary.upperRight().getX() + boundary.lowerLeft().getX() + 1) / 2;
+        int middleEquator = (boundary.upperRight().getY() + boundary.lowerLeft().getY() + 1) / 2;
         int equatorTop = middleEquator + middleEquator / 10;
         int equatorBottom = middleEquator - middleEquator / 10;
         return y >= equatorBottom && y <= equatorTop;
@@ -115,7 +115,7 @@ public class WorldMap implements WorldMapInterface {
         return true;
     }
 
-    public void removeLiveAnimal(Animal animal) {
+    private void removeLiveAnimal(Animal animal) {
         Vector2d position = animal.getPosition();
         liveAnimals.get(position).remove(animal);
         if (liveAnimals.get(position).isEmpty()) {
@@ -123,7 +123,7 @@ public class WorldMap implements WorldMapInterface {
         }
     }
 
-    public void removeDeadAnimal(Animal animal) {
+    protected void removeDeadAnimal(Animal animal) {
 //        System.out.println("removing dead animal");
         Vector2d position = animal.getPosition();
         deadAnimals.get(position).remove(animal);
@@ -132,7 +132,6 @@ public class WorldMap implements WorldMapInterface {
 //            System.out.println("dead animals empty");
         }
     }
-
 
 
     @Override
@@ -173,26 +172,27 @@ public class WorldMap implements WorldMapInterface {
     }
 
     public void grassGrows(int grassAmount) {
-        int i = 0;
-        while (i < grassAmount) {
-            if (fieldsWithGrassGrowPriority.isEmpty()) {
-                if (fieldsWithoutGrassGrowPriority.isEmpty()) {
-                    break;
-                } else {
-                    grassGrowOnFields(fieldsWithoutGrassGrowPriority);
-                }
+        generateGrassFromGivenFields(this.fieldsWithGrassGrowPriority, grassAmount);
+    }
+
+    protected void generateGrassFromGivenFields(List<Vector2d> allFieldsWithPriority, int grassAmount) {
+        for (int i = 0; i < grassAmount; i++) {
+            if (allFieldsWithPriority.isEmpty() && fieldsWithoutGrassGrowPriority.isEmpty()) {
+                break;
             } else if (fieldsWithoutGrassGrowPriority.isEmpty()) {
-                grassGrowOnFields(fieldsWithGrassGrowPriority);
+                grassGrowOnFields(allFieldsWithPriority);
+            } else if (allFieldsWithPriority.isEmpty()) {
+                grassGrowOnFields(fieldsWithoutGrassGrowPriority);
             } else {
                 double priority = (Math.random() * 100);
                 if (priority <= 80) {
-                    grassGrowOnFields(fieldsWithGrassGrowPriority);
+                    grassGrowOnFields(allFieldsWithPriority);
+//                    System.out.println("Z");
                 } else {
                     grassGrowOnFields(fieldsWithoutGrassGrowPriority);
+//                    System.out.println("BEZ");
                 }
             }
-//            zawsze rosnie bo w fields zawsze jest pole gdzie moze urosnac trawa
-            i++;
         }
     }
 
@@ -201,7 +201,13 @@ public class WorldMap implements WorldMapInterface {
         Vector2d position = fields.get(randomIndex);
 //        System.out.println("grass planted at: " + position);
         grasses.put(position, new Grass(position));
-        fields.remove(position);
+//        fields.remove(position);
+        removeGrassFromFields(position);
+    }
+
+    protected void removeGrassFromFields(Vector2d position) {
+        fieldsWithGrassGrowPriority.remove(position);
+        fieldsWithoutGrassGrowPriority.remove(position);
     }
 
     @Override

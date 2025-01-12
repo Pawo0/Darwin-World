@@ -26,7 +26,23 @@ public class SimulationPresenter implements MapChangeListener {
     @FXML
     private void initialize() {
         System.out.println("SimulationPresenter initialized");
-        settings = new SimulationSettings(20, 20, 300, 16, 40, true, 200, 15, 30, 30, 0, 1, MutationType.DEFAULT, 7, 100);
+        settings = new SimulationSettings(
+                50,
+                100,
+                40,
+                7,
+                10,
+                true,
+                5,
+                600,
+                30,
+                30,
+                0,
+                40,
+                MutationType.DEFAULT,
+                70,
+                100
+        );
         if (settings.isLifeGivingCorpses()) {
             map = new WorldMapDeadAnimals(settings);
         } else {
@@ -72,14 +88,14 @@ public class SimulationPresenter implements MapChangeListener {
         clearGrid();
 
 
-        for (int i = 0; i <= width + 1; i++) {
+        for (int i = 0; i <= width; i++) {
             mapGrid.getColumnConstraints().add(new ColumnConstraints(cellSize));
         }
-        for (int j = 0; j <= height + 1; j++) {
+        for (int j = 0; j <= height; j++) {
             mapGrid.getRowConstraints().add(new RowConstraints(cellSize));
         }
-        for (int i = -1; i <= width; i++) {
-            for (int j = -1; j <= height; j++) {
+        for (int i = -1; i <= width-1; i++) {
+            for (int j = -1; j <= height-1; j++) {
                 Vector2d currentPosition = new Vector2d(i, j);
                 Label label = null;
                 Object object = null;
