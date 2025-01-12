@@ -29,7 +29,7 @@ public class SimulationPresenter implements MapChangeListener {
     @FXML
     private void initialize() {
         System.out.println("SimulationPresenter initialized");
-        settings = new SimulationSettings(20, 20, 50, 5, 5, false, 50, 15, 30, 30, 0, 1, false, 7, 300);
+        settings = new SimulationSettings(20, 20, 300, 16, 40, true, 200, 15, 30, 30, 0, 1, true, 7, 100);
         if (settings.isLifeGivingCorpses()) {
             map = new WorldMapDeadAnimals(settings);
         } else {
@@ -42,18 +42,23 @@ public class SimulationPresenter implements MapChangeListener {
     public void start() {
         napis.setText("Hello World!");
         System.out.println("hello world");
-        engine = new SimulationEngine(List.of(simulation));
-        try {
-            engine.runAsync();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        if (engine != null) {
+            engine.resume();
+        } else {
+//            aktualnie dziala tak ze jednoczesnie kilka na raz chce dzialac
+            engine = new SimulationEngine(List.of(simulation));
+            try {
+                engine.runAsync();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            map.addObserver(this);
+            drawMap();
         }
-        map.addObserver(this);
-        drawMap();
     }
 
-    public void stop(){
-
+    public void pause() {
+        engine.pause();
     }
 
     private void clearGrid() {
@@ -65,7 +70,7 @@ public class SimulationPresenter implements MapChangeListener {
     public void drawMap() {
         int height = settings.getMapHeight();
         int width = settings.getMapWidth();
-        double cellSize = Math.min(400 / (height + 1), 400 / (width + 1));
+        double cellSize = Math.min(600 / (height + 1), 600 / (width + 1));
 
         clearGrid();
 
@@ -91,10 +96,7 @@ public class SimulationPresenter implements MapChangeListener {
                     object = this.map.animalsAt(currentPosition).peek();
                 } else if (this.map.isGrassAt(currentPosition)) {
                     object = this.map.getGrassAt(currentPosition);
-
-//  totalnie nie mam pojecia, czemu z instanceof martwe ciala pojawiaja sie tylko na dzien, a bez nigdy nie znikaja
-//                } else if (this.map.isDeadAnimalAt(currentPosition) && map instanceof WorldMapDeadAnimals) {
-                } else if (this.map.isDeadAnimalAt(currentPosition) ) {
+                } else if (this.map.isDeadAnimalAt(currentPosition) && settings.isLifeGivingCorpses()) {
                     object = this.map.getDeadAnimals().get(currentPosition).peek();
                 } else {
                     label = new Label(" ");
@@ -113,7 +115,7 @@ public class SimulationPresenter implements MapChangeListener {
 
     @Override
     public void mapChanged(WorldMap worldMap, String message) {
-        Platform.runLater(() ->{
+        Platform.runLater(() -> {
             napis.setText("Living animals" + message);
             drawMap();
         });

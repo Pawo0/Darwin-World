@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            minHeight="550.0" minWidth="850.0"
+            minHeight="750.0" minWidth="1000.0"
             fx:controller="org.example.simulations.SimulationPresenter"
 >
     <center>
@@ -22,7 +22,7 @@
             <Label fx:id="napis" text="Manage" textAlignment="CENTER"/>
             <HBox spacing="10" alignment="CENTER">
                 <Button text="Start" onAction="#start"/>
-                <Button text="Stop"/>
+                <Button text="Pause" onAction="#pause"/>
             </HBox>
         </VBox>
     </bottom>
