@@ -1,5 +1,7 @@
 package org.example.model;
 
+import org.example.simulations.SimulationSettings;
+
 import java.util.Random;
 
 public class GenomeSwap extends Genome{
