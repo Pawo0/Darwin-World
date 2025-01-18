@@ -30,9 +30,7 @@ public class WorldMapDeadAnimals extends WorldMap {
         for (PriorityQueue<Animal> animals : this.deadAnimals.values()) {
             for (Animal animal : animals) {
                 if (animal.getDeathDate() < this.currentDay - 10) {
-//                    System.out.println("Usuwam martwe zwierze");
-//                    System.out.println(animal.getDeathDate());
-//                    System.out.println(this.currentDay);
+//                    System.out.println("w dniu " + this.currentDay + " usunieto martwe zwierze umarte w " + animal.getDeathDate());
                     animalsToRemove.add(animal);
                 }
             }
@@ -52,7 +50,7 @@ public class WorldMapDeadAnimals extends WorldMap {
         int y = position.getY();
         for (int i = x - 2; i <= x + 2; i++) {
             for (int j = y - 2; j <= y + 2; j++) {
-                if (i >= 0 && i < this.width && j >= 0 && j < this.height && !this.isGrassAt(new Vector2d(i, j)) && !this.fieldsWithGrassGrowPriority.contains(new Vector2d(i, j))){
+                if (i >= 0 && i < this.width && j >= 0 && j < this.height && !this.isGrassAt(new Vector2d(i, j)) && !this.tmpFieldsWithPriority.contains(new Vector2d(i, j))){
                     tmpFieldsWithPriority.add(new Vector2d(i, j));
                 }
             }
@@ -92,7 +90,7 @@ public class WorldMapDeadAnimals extends WorldMap {
     }
 
     @Override
-    protected void removeGrassFromFields(Vector2d position){;
+    protected void removeGrassFromFields(Vector2d position){
         if (tmpFieldsWithPriority != null) tmpFieldsWithPriority.remove(position);
         super.removeGrassFromFields(position);
     }

@@ -9,9 +9,6 @@ public class WorldMap implements WorldMapInterface {
     protected final UUID id;
     protected final Map<Vector2d, PriorityQueue<Animal>> liveAnimals;
 
-    public Map<Vector2d, PriorityQueue<Animal>> getDeadAnimals() {
-        return deadAnimals;
-    }
 
     protected final Map<Vector2d, PriorityQueue<Animal>> deadAnimals;
 
@@ -65,6 +62,10 @@ public class WorldMap implements WorldMapInterface {
 
     public Map<Vector2d, Grass> getGrasses() {
         return grasses;
+    }
+
+    public Map<Vector2d, PriorityQueue<Animal>> getDeadAnimals() {
+        return deadAnimals;
     }
 
     protected void allAnimalsAgeUp() {
@@ -233,7 +234,7 @@ public class WorldMap implements WorldMapInterface {
             case SWAP -> new GenomeSwap(settings);
             case DEFAULT -> new Genome(settings);
         };
-        Animal child = new Animal(genome, position, this.settings);
+        Animal child = new Animal(genome, position, this.settings, this.currentDay);
         animal1.birthChild(child, energyUsedToCopulate);
         animal2.birthChild(child, energyUsedToCopulate);
         return child;

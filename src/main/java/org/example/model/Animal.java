@@ -19,9 +19,10 @@ public class Animal implements WorldElement {
     private int geneIndex;
     private int grassEaten;
     private SimulationSettings settings;
+    private int birthDate;
 
 
-    public Animal(Genome genotype,Vector2d position, SimulationSettings settings) {
+    public Animal(Genome genotype, Vector2d position, SimulationSettings settings, int birthDate) {
 
         this.position = position;
         this.energy = settings.getStartAnimalEnergy();
@@ -35,19 +36,20 @@ public class Animal implements WorldElement {
         this.geneIndex = 0;
         this.grassEaten = 0;
         this.deathDate = -1;
+
+        this.birthDate = birthDate;
     }
 
 
     public void move() {
-        MapDirection newDirection = this.mapDirection.rotate(genotype.getGen(geneIndex%genotype.getGenomeSize()));
-        this.mapDirection = this.mapDirection.rotate(genotype.getGen(geneIndex%genotype.getGenomeSize()));
+        MapDirection newDirection = this.mapDirection.rotate(genotype.getGen(geneIndex % genotype.getGenomeSize()));
+        this.mapDirection = this.mapDirection.rotate(genotype.getGen(geneIndex % genotype.getGenomeSize()));
         Vector2d newPosition = this.position.add(newDirection.toUnitVector());
-        if (newPosition.getY() > settings.getMapHeight()-1 || newPosition.getY() < 0){
+        if (newPosition.getY() > settings.getMapHeight() - 1 || newPosition.getY() < 0) {
             bounceBack();
-        }else if (newPosition.getX() > settings.getMapWidth()-1 || newPosition.getX() < 0){
-            this.position = new Vector2d((settings.getMapWidth() + newPosition.getX())%settings.getMapWidth(), newPosition.getY());
-        }
-        else {
+        } else if (newPosition.getX() > settings.getMapWidth() - 1 || newPosition.getX() < 0) {
+            this.position = new Vector2d((settings.getMapWidth() + newPosition.getX()) % settings.getMapWidth(), newPosition.getY());
+        } else {
             this.position = newPosition;
         }
 
@@ -61,17 +63,17 @@ public class Animal implements WorldElement {
         this.energy -= energyToSubtract;
     }
 
-    public void eat(){
+    public void eat() {
         this.energy += settings.getEnergyGainedFromEating();
         this.grassEaten++;
     }
 
-    public void incrementAge(){
+    public void incrementAge() {
         this.age++;
     }
 
-    public void animalDeath(){
-        this.deathDate=this.age;
+    public void animalDeath() {
+        this.deathDate = this.age + this.birthDate;
     }
 
     @Override
@@ -115,16 +117,20 @@ public class Animal implements WorldElement {
         return deathDate;
     }
 
+    public int getBirthDate() {
+        return birthDate;
+    }
+
     public void subtractCopulationEnergy(int energyToSubtract) {
         this.energy -= energyToSubtract;
     }
 
-    private void bounceBack(){
+    private void bounceBack() {
         this.mapDirection = this.mapDirection.rotate(4);
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return this.energy >= 0 ? String.valueOf(this.energy) : "X";
     }
 }
