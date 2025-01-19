@@ -47,6 +47,7 @@ public class WorldMap implements WorldMapInterface {
         this.settings = settings;
         initGrassGrowingChance();
         grassGrows(settings.getStartAmountOfGrass());
+        System.out.println("WorldMap created");
     }
 
     public void nextDay() {
@@ -58,14 +59,6 @@ public class WorldMap implements WorldMapInterface {
         animalCopulate();
         dailyGrassGrow();
         notifyObservers(String.valueOf(liveAnimalsAmount()));
-    }
-
-    public Map<Vector2d, Grass> getGrasses() {
-        return grasses;
-    }
-
-    public Map<Vector2d, PriorityQueue<Animal>> getDeadAnimals() {
-        return deadAnimals;
     }
 
     protected void allAnimalsAgeUp() {
@@ -116,21 +109,12 @@ public class WorldMap implements WorldMapInterface {
         return true;
     }
 
-    private void removeLiveAnimal(Animal animal) {
-        Vector2d position = animal.getPosition();
-        liveAnimals.get(position).remove(animal);
-        if (liveAnimals.get(position).isEmpty()) {
-            liveAnimals.remove(position);
-        }
-    }
 
-    protected void removeDeadAnimal(Animal animal) {
-//        System.out.println("removing dead animal");
+    protected void removeAnimal(Animal animal, Map<Vector2d, PriorityQueue<Animal>> animals) {
         Vector2d position = animal.getPosition();
-        deadAnimals.get(position).remove(animal);
-        if (deadAnimals.get(position).isEmpty()) {
-            deadAnimals.remove(position);
-//            System.out.println("dead animals empty");
+        animals.get(position).remove(animal);
+        if (animals.get(position).isEmpty()) {
+            animals.remove(position);
         }
     }
 
@@ -142,11 +126,9 @@ public class WorldMap implements WorldMapInterface {
             animalsToMove.addAll(animals);
         }
         for (Animal animal : animalsToMove) {
-//            liveAnimals.get(animal.getPosition()).remove(animal);
-            removeLiveAnimal(animal);
-//            System.out.println("animal moved from: " + animal.getPosition());
+//            removeLiveAnimal(animal);
+            removeAnimal(animal, liveAnimals);
             animal.move();
-//            System.out.println("animal moved to: " + animal.getPosition());
             this.place(animal);
         }
     }
@@ -188,10 +170,8 @@ public class WorldMap implements WorldMapInterface {
                 double priority = (Math.random() * 100);
                 if (priority <= 80) {
                     grassGrowOnFields(allFieldsWithPriority);
-//                    System.out.println("Z");
                 } else {
                     grassGrowOnFields(fieldsWithoutGrassGrowPriority);
-//                    System.out.println("BEZ");
                 }
             }
         }
@@ -235,6 +215,7 @@ public class WorldMap implements WorldMapInterface {
             case DEFAULT -> new Genome(settings);
         };
         Animal child = new Animal(genome, position, this.settings, this.currentDay);
+        child.setParents(List.of(animal1, animal2));
         animal1.birthChild(child, energyUsedToCopulate);
         animal2.birthChild(child, energyUsedToCopulate);
         return child;
@@ -287,7 +268,7 @@ public class WorldMap implements WorldMapInterface {
         }
         for (Animal animal : animalsToRemove) {
             Vector2d position = animal.getPosition();
-            removeLiveAnimal(animal);
+            removeAnimal(animal, liveAnimals);
             deadAnimals.putIfAbsent(position, new PriorityQueue<>(animalComparator));
             deadAnimals.get(position).add(animal);
         }
@@ -297,6 +278,22 @@ public class WorldMap implements WorldMapInterface {
     @Override
     public UUID getId() {
         return this.id;
+    }
+
+    public Map<Vector2d, Grass> getGrasses() {
+        return grasses;
+    }
+
+    public int getCurrentDay() {
+        return currentDay;
+    }
+
+    public Map<Vector2d, PriorityQueue<Animal>> getLiveAnimals() {
+        return liveAnimals;
+    }
+
+    public Map<Vector2d, PriorityQueue<Animal>> getDeadAnimals() {
+        return deadAnimals;
     }
 
     public void addObserver(MapChangeListener observer) {

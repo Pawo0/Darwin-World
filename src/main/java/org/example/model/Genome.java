@@ -82,4 +82,9 @@ public class Genome {
     public int getGenomeSize() {
         return genome.size();
     }
+
+    @Override
+    public String toString() {
+        return genome.toString();
+    }
 }
