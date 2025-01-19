@@ -21,6 +21,9 @@ public class Animal implements WorldElement {
     private SimulationSettings settings;
     private int birthDate;
 
+    private int descendantsCounter;
+    private List<Animal> parents;
+
 
     public Animal(Genome genotype, Vector2d position, SimulationSettings settings, int birthDate) {
 
@@ -37,6 +40,8 @@ public class Animal implements WorldElement {
         this.grassEaten = 0;
         this.deathDate = -1;
 
+        this.parents = new ArrayList<>();
+        this.descendantsCounter = 0;
         this.birthDate = birthDate;
     }
 
@@ -61,6 +66,20 @@ public class Animal implements WorldElement {
         this.children.add(child);
         this.childrenCounter++;
         this.energy -= energyToSubtract;
+        addDescendant();
+    }
+
+    public void addDescendant() {
+        descendantsCounter++;
+        this.parents.forEach(Animal::addDescendant);
+    }
+
+    public int getDescendantsCounter() {
+        return descendantsCounter;
+    }
+
+    public void setParents(List<Animal> parents) {
+        this.parents = parents;
     }
 
     public void eat() {
