@@ -61,6 +61,6 @@
     <Label text="Save stats to CSV:" GridPane.rowIndex="15" GridPane.columnIndex="0"/>
     <CheckBox fx:id="saveToCSVField" GridPane.rowIndex="15" GridPane.columnIndex="1"/>
 
-
-    <Button text="Start Simulation" onAction="#startSimulation" GridPane.rowIndex="16" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
-</GridPane>
+    <Button text="Load Configuration" onAction="#loadConfiguration" GridPane.rowIndex="16" GridPane.columnIndex="0"/>
+    <Button text="Save Configuration" onAction="#saveConfiguration" GridPane.rowIndex="16" GridPane.columnIndex="1"/>
+    <Button text="Start Simulation" onAction="#startSimulation" GridPane.rowIndex="17" GridPane.columnIndex="0" GridPane.columnSpan="2"/></GridPane>
