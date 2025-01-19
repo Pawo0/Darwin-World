@@ -16,6 +16,7 @@ import org.example.model.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Vector;
 
 public class SimulationPresenter implements MapChangeListener {
     @FXML
@@ -37,6 +38,27 @@ public class SimulationPresenter implements MapChangeListener {
     @FXML
     private Label averageDescendantAmount;
 
+
+    @FXML
+    private Label animalGenome;
+    @FXML
+    private Label animalActiveGenome;
+    @FXML
+    private Label animalEnergy;
+    @FXML
+    private Label animalEatenGrass;
+    @FXML
+    private Label animalChildrenAmount;
+    @FXML
+    private Label animalDescendantsAmount;
+    @FXML
+    private Label animalLifeSpan;
+    @FXML
+    private Label animalDeathDay;
+
+    @FXML
+    private GridPane animalStats;
+
     @FXML
     private GridPane mapGrid;
 
@@ -47,6 +69,13 @@ public class SimulationPresenter implements MapChangeListener {
     private SimulationStats stats;
     private Image animalImage;
     private Image grassImage = new Image(getClass().getResourceAsStream("/images/grass.png"));
+    private Image krecikImage = new Image(getClass().getResourceAsStream("/images/krecik.jpg"));
+
+    private int height;
+    private int width;
+    private double cellSize;
+
+    private Animal followedAnimal;
 
     @FXML
     private void initialize() {
@@ -77,6 +106,9 @@ public class SimulationPresenter implements MapChangeListener {
         }
         this.simulation = new Simulation(settings, map);
         this.stats = new SimulationStats(map);
+        height = settings.getMapHeight();
+        width = settings.getMapWidth();
+        cellSize = Math.min(600 / (height + 1), 600 / (width + 1));
         drawMap();
     }
 
@@ -122,6 +154,18 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
     private GridPane createAnimalView(Animal animal, double cellSize) {
+        if (animal == followedAnimal){
+            Vector2d position = animal.getPosition();
+            ImageView krecikView = new ImageView(krecikImage);
+            krecikView.setFitWidth(cellSize);
+            krecikView.setFitHeight(cellSize);
+            GridPane.setHalignment(krecikView, HPos.CENTER);
+            mapGrid.add(krecikView, position.getX() + 1, position.getY() + 1, 1, 1);
+            GridPane animalView = new GridPane();
+            animalView.add(krecikView, 0, 0);
+            return animalView;
+        }
+
         ImageView imageView = new ImageView(animalImage);
         imageView.setFitWidth(cellSize * 0.8); // Make the image smaller
         imageView.setFitHeight(cellSize * 0.8); // Make the image smaller
@@ -158,9 +202,9 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
     public void drawMap() {
-        int height = settings.getMapHeight();
-        int width = settings.getMapWidth();
-        double cellSize = Math.min(600 / (height + 1), 600 / (width + 1));
+//        int height = settings.getMapHeight();
+//        int width = settings.getMapWidth();
+//        double cellSize = Math.min(600 / (height + 1), 600 / (width + 1));
 
         clearGrid();
 
@@ -175,28 +219,27 @@ public class SimulationPresenter implements MapChangeListener {
                 Vector2d currentPosition = new Vector2d(i, j);
                 Label label = null;
                 Object object = null;
-//                if (i == -1 && j == -1) {
-//                    label = new Label("x/y");
-//                } else if (i == -1) {
-//                    label = new Label("" + currentPosition.getY());
-//                } else if (j == -1) {
-//                    label = new Label("" + currentPosition.getX());
-//                } else
                 if (this.map.isAnimalAt(currentPosition)) {
                     object = this.map.animalsAt(currentPosition).peek();
                     if (object != null) {
-                        GridPane animalView = createAnimalView((Animal) object, cellSize);
+                        Animal animal = (Animal) object;
+                        GridPane animalView = createAnimalView(animal, cellSize);
                         GridPane.setHalignment(animalView, HPos.CENTER);
                         mapGrid.add(animalView, i + 1, j + 1, 1, 1);
+                        animalView.setOnMouseClicked(event -> {
+                            handleAnimalClick(animal);
+                        });
                         continue;
                     }
-                } else if (this.map.isGrassAt(currentPosition)) {
+                }
+                else if (this.map.isGrassAt(currentPosition)) {
                     ImageView grassView = new ImageView(grassImage);
                     grassView.setFitWidth(cellSize);
                     grassView.setFitHeight(cellSize);
                     GridPane.setHalignment(grassView, HPos.CENTER);
                     mapGrid.add(grassView, i + 1, j + 1, 1, 1);
                     continue;
+
                 } else if (this.map.isDeadAnimalAt(currentPosition) && settings.isLifeGivingCorpses()) {
                     object = this.map.getDeadAnimals().get(currentPosition).peek();
                 } else {
@@ -209,11 +252,62 @@ public class SimulationPresenter implements MapChangeListener {
                 mapGrid.add(label, i + 1, j + 1, 1, 1);
             }
         }
+        if (followedAnimal != null) {
+            drawAnimalStats(followedAnimal);
+            animalStats.visibleProperty().setValue(true);
+//            mapChanged(map, "animal stats");
+        }
+        else {
+            animalStats.visibleProperty().setValue(false);
+        }
+    }
+
+    private void drawAnimalStats(Animal animal){
+        animalGenome.setText(animal.getGenotype().toString());
+        animalActiveGenome.setText(String.valueOf(animal.getGenotype().getGen(animal.getGeneIndex())));
+        animalEnergy.setText(String.valueOf(animal.getEnergy()));
+        animalEatenGrass.setText(String.valueOf(animal.getGrassEaten()));
+        animalChildrenAmount.setText(String.valueOf(animal.getChildrenCounter()));
+        animalDescendantsAmount.setText(String.valueOf(animal.getDescendantsCounter()));
+        animalLifeSpan.setText(String.valueOf(animal.getAge()));
+        animalDeathDay.setText(String.valueOf(animal.getDeathDate()));
+    }
+
+
+    private void drawFocusedAnimal(Animal animal){
+        Vector2d position = animal.getPosition();
+        if (map.isAnimalAt(position)){
+            System.out.println("Animal at " + position + " clicked: " + animal);
+            ImageView krecikView = new ImageView(krecikImage);
+            krecikView.setFitWidth(cellSize);
+            krecikView.setFitHeight(cellSize);
+            GridPane.setHalignment(krecikView, HPos.CENTER);
+            mapGrid.add(krecikView, position.getX() + 1, position.getY() + 1, 1, 1);
+        }
+    }
+
+    private void handleAnimalClick(Animal animal){
+        if (followedAnimal == null){
+            followedAnimal = animal;
+            drawFocusedAnimal(animal);
+
+            setAnimalStats(animal);
+            drawAnimalStats(animal);
+            animalStats.visibleProperty().setValue(true);
+        }
+        else if (followedAnimal.equals(animal)){
+            followedAnimal = null;
+            mapChanged(map, "clicked");
+        }
+        else{
+            followedAnimal = animal;
+            mapChanged(map, "clicked");
+        }
     }
 
 
     private void setStats(){
-        if (true) {
+        if (settings.isSaveToCSV()) {
             this.stats = new SimulationStats(map, "stats/" +map.getId() + "-stats.csv");
         }
         else{
@@ -227,6 +321,15 @@ public class SimulationPresenter implements MapChangeListener {
         averageEnergy.setText(String.valueOf(round(stats.getAverageEnergy(),2)));
         averageLifeSpan.setText(String.valueOf(round(stats.getAverageLifeSpan(),2)));
         averageDescendantAmount.setText(String.valueOf(round(stats.getAverageDescendantAmount(),2)));
+    }
+
+    private void setAnimalStats(Animal animal){
+        AnimalStats animalStats = new AnimalStats(animal);
+        System.out.println(animalStats);
+    }
+
+    private void clearAnimalStats(){
+        System.out.println("clear");
     }
 
     public static double round(double value, int places) {
