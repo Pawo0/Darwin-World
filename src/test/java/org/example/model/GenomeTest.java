@@ -50,9 +50,9 @@ class GenomeTest {
         Genome parent1 = new Genome(settings);
         Genome parent2 = new Genome(settings);
 
-        Animal animal1 = new Animal(parent1, new Vector2d(0, 0), settings);
+        Animal animal1 = new Animal(parent1, new Vector2d(0, 0), settings, 0);
         animal1.subtractCopulationEnergy(30); // parent1: energy = 70
-        Animal animal2 = new Animal(parent2, new Vector2d(0, 0), settings);
+        Animal animal2 = new Animal(parent2, new Vector2d(0, 0), settings, 0);
         animal2.subtractCopulationEnergy(50); // parent2: energy = 50
 
 

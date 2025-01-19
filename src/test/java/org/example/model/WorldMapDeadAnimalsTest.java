@@ -16,7 +16,7 @@ class WorldMapDeadAnimalsTest {
     @Test
     void clearDeadBodies_removesOldDeadAnimals() {
         WorldMapDeadAnimals map = new WorldMapDeadAnimals(settings);
-        Animal oldDeadAnimal = new Animal(genome, new Vector2d(0, 0), settings);
+        Animal oldDeadAnimal = new Animal(genome, new Vector2d(0, 0), settings,0 );
         map.deadAnimals.putIfAbsent(new Vector2d(0, 0), new PriorityQueue<>());
         map.currentDay = 11;
 
@@ -28,7 +28,7 @@ class WorldMapDeadAnimalsTest {
     @Test
     void clearDeadBodies_doesNotRemoveRecentDeadAnimals() {
         WorldMapDeadAnimals map = new WorldMapDeadAnimals(settings);
-        Animal recentDeadAnimal = new Animal(genome, new Vector2d(0, 0), settings);
+        Animal recentDeadAnimal = new Animal(genome, new Vector2d(0, 0), settings, 0);
         map.deadAnimals.putIfAbsent(new Vector2d(0, 0), new PriorityQueue<>());
         map.currentDay = 5;
 
