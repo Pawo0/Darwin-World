@@ -7,13 +7,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class WorldMapTest {
 
-    SimulationSettings settings = new SimulationSettings(10, 10, 0, 20, 1, false, 1, 100, 10, 1,0,0,MutationType.DEFAULT, 5, 400);
+    SimulationSettings settings = new SimulationSettings(10, 10, 0, 20, 1, false, 1, 100, 10, 1,0,0,MutationType.DEFAULT, 5, 400, false);
     Genome genome = new Genome(settings);
 
     @Test
     void placeAnimalSuccessfully() throws IncorrectPositionException {
         WorldMap worldMap = new WorldMap(settings);
-        Animal animal = new Animal(genome, new Vector2d(1, 1), settings);
+        Animal animal = new Animal(genome, new Vector2d(1, 1), settings, 0);
         assertTrue(worldMap.place(animal));
         assertTrue(worldMap.isAnimalAt(new Vector2d(1, 1)));
     }
@@ -21,8 +21,8 @@ class WorldMapTest {
     @Test
     void placeAnimalAtOccupiedPosition() throws IncorrectPositionException {
         WorldMap worldMap = new WorldMap(settings);
-        Animal animal1 = new Animal(genome, new Vector2d(1, 1), settings);
-        Animal animal2 = new Animal(genome, new Vector2d(1, 1), settings);
+        Animal animal1 = new Animal(genome, new Vector2d(1, 1), settings, 0);
+        Animal animal2 = new Animal(genome, new Vector2d(1, 1), settings, 0);
         worldMap.place(animal1);
         assertTrue(worldMap.place(animal2));
         assertEquals(2, worldMap.animalsAt(new Vector2d(1, 1)).size());
@@ -31,7 +31,7 @@ class WorldMapTest {
     @Test
     void allAnimalsMoveSuccessfully() throws IncorrectPositionException {
         WorldMap worldMap = new WorldMap(settings);
-        Animal animal = new Animal(genome, new Vector2d(1, 1), settings);
+        Animal animal = new Animal(genome, new Vector2d(1, 1), settings, 0);
         worldMap.place(animal);
         worldMap.nextDay();
         assertNotEquals(new Vector2d(1, 1), animal.getPosition());
@@ -41,7 +41,7 @@ class WorldMapTest {
     void allAnimalsEatSuccessfully() throws IncorrectPositionException {
         WorldMap worldMap = new WorldMap(settings);
         Vector2d position = new Vector2d(3, 4);
-        Animal animal = new Animal(genome, position, settings);
+        Animal animal = new Animal(genome, position, settings, 0);
         worldMap.place(animal);
         if(worldMap.isGrassAt(position)) {
             worldMap.allAnimalsEat();
@@ -63,8 +63,8 @@ class WorldMapTest {
     @Test
     void animalCopulateSuccessfully() throws IncorrectPositionException {
         WorldMap worldMap = new WorldMap(settings);
-        Animal animal1 = new Animal(genome, new Vector2d(1, 1), settings);
-        Animal animal2 = new Animal(genome, new Vector2d(1, 1), settings);
+        Animal animal1 = new Animal(genome, new Vector2d(1, 1), settings, 0);
+        Animal animal2 = new Animal(genome, new Vector2d(1, 1), settings, 0);
         worldMap.place(animal1);
         worldMap.place(animal2);
         worldMap.animalCopulate();
@@ -74,7 +74,7 @@ class WorldMapTest {
     @Test
     void checkForDeadAnimalsSuccessfully() throws IncorrectPositionException {
         WorldMap worldMap = new WorldMap(settings);
-        Animal animal = new Animal(genome, new Vector2d(1, 1), settings);
+        Animal animal = new Animal(genome, new Vector2d(1, 1), settings, 0);
         worldMap.place(animal);
         animal.subtractCopulationEnergy(101);
         worldMap.checkForDeadAnimals();

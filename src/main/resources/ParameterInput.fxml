@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+
+<GridPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.ParameterInputController">
+    <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+    <hgap>10</hgap>
+    <vgap>10</vgap>
+
+    <Label text="Map Width:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+    <TextField fx:id="mapWidthField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+    <Label text="Map Height:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+    <TextField fx:id="mapHeightField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+    <Label text="Start Amount of Grass:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+    <TextField fx:id="startAmountOfGrassField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+    <Label text="Energy Gained From Eating:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+    <TextField fx:id="energyGainedFromEatingField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+    <Label text="Daily Amount Growing Grass:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+    <TextField fx:id="dailyAmountGrowingGrassField" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+    <Label text="Life Giving Corpses:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+    <CheckBox fx:id="lifeGivingCorpsesField" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+    <Label text="Start Amount of Animals:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+    <TextField fx:id="startAmountOfAnimalsField" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+    <Label text="Start Animal Energy:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+    <TextField fx:id="startAnimalEnergyField" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+
+    <Label text="Energy Needed to Copulate:" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+    <TextField fx:id="energyNeededToCopulateField" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+
+    <Label text="Energy Used to Copulate:" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
+    <TextField fx:id="energyUsedToCopulateField" GridPane.rowIndex="9" GridPane.columnIndex="1"/>
+
+    <Label text="Min Mutation Amount:" GridPane.rowIndex="10" GridPane.columnIndex="0"/>
+    <TextField fx:id="minMutationAmountField" GridPane.rowIndex="10" GridPane.columnIndex="1"/>
+
+    <Label text="Max Mutation Amount:" GridPane.rowIndex="11" GridPane.columnIndex="0"/>
+    <TextField fx:id="maxMutationAmountField" GridPane.rowIndex="11" GridPane.columnIndex="1"/>
+
+    <Label text="Mutation Type:" GridPane.rowIndex="12" GridPane.columnIndex="0"/>
+    <ComboBox fx:id="mutationTypeField" GridPane.rowIndex="12" GridPane.columnIndex="1"/>
+
+    <Label text="Genome Length:" GridPane.rowIndex="13" GridPane.columnIndex="0"/>
+    <TextField fx:id="genomeLengthField" GridPane.rowIndex="13" GridPane.columnIndex="1"/>
+
+    <Label text="Refresh Time:" GridPane.rowIndex="14" GridPane.columnIndex="0"/>
+    <TextField fx:id="refreshTimeField" GridPane.rowIndex="14" GridPane.columnIndex="1"/>
+
+    <Label text="Save stats to CSV:" GridPane.rowIndex="15" GridPane.columnIndex="0"/>
+    <CheckBox fx:id="saveToCSVField" GridPane.rowIndex="15" GridPane.columnIndex="1"/>
+
+    <Button text="Load Configuration" onAction="#loadConfiguration" GridPane.rowIndex="16" GridPane.columnIndex="0"/>
+    <Button text="Save Configuration" onAction="#saveConfiguration" GridPane.rowIndex="16" GridPane.columnIndex="1"/>
+    <Button text="Start Simulation" onAction="#startSimulation" GridPane.rowIndex="17" GridPane.columnIndex="0" GridPane.columnSpan="2"/></GridPane>

@@ -6,13 +6,13 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AnimalTest {
-    SimulationSettings settings = new SimulationSettings(10, 10, 0, 20, 1, false, 1, 100, 10, 1,0,0,MutationType.DEFAULT, 5, 400);
+    SimulationSettings settings = new SimulationSettings(10, 10, 0, 20, 1, false, 1, 100, 10, 1,0,0,MutationType.DEFAULT, 5, 400, false);
 
     @Test
     void testAnimalInitialization() {
         Genome genome = new Genome(settings);
         Vector2d initialPosition = new Vector2d(0, 0);
-        Animal animal = new Animal(genome, initialPosition, settings);
+        Animal animal = new Animal(genome, initialPosition, settings,0);
 
         assertEquals(initialPosition, animal.getPosition());
         assertEquals(100, animal.getEnergy());
@@ -28,7 +28,7 @@ class AnimalTest {
     void testMove() {
         Genome genome = new Genome(settings);
         Vector2d initialPosition = new Vector2d(0, 0);
-        Animal animal = new Animal(genome, initialPosition, settings);
+        Animal animal = new Animal(genome, initialPosition, settings, 0);
 
         animal.move();
         assertNotEquals(initialPosition, animal.getPosition());
@@ -40,7 +40,7 @@ class AnimalTest {
     void testEat() {
         Genome genome = new Genome(settings);
         Vector2d position = new Vector2d(0, 0);
-        Animal animal = new Animal(genome, position, settings);
+        Animal animal = new Animal(genome, position, settings, 0);
 
         animal.eat();
         assertEquals(120, animal.getEnergy());
@@ -51,7 +51,7 @@ class AnimalTest {
     void testIncrementAge() {
         Genome genome = new Genome(settings);
         Vector2d position = new Vector2d(0, 0);
-        Animal animal = new Animal(genome, position, settings);
+        Animal animal = new Animal(genome, position, settings, 0);
 
         animal.incrementAge();
         assertEquals(1, animal.getAge());
@@ -61,7 +61,7 @@ class AnimalTest {
     void testAnimalDeath() {
         Genome genome = new Genome(settings);
         Vector2d position = new Vector2d(0, 0);
-        Animal animal = new Animal(genome, position, settings);
+        Animal animal = new Animal(genome, position, settings, 0);
 
         animal.incrementAge();
         animal.incrementAge();
@@ -75,9 +75,9 @@ class AnimalTest {
     void testChildrenManagement() {
         Genome genome = new Genome(settings);
         Vector2d position = new Vector2d(0, 0);
-        Animal parent = new Animal(genome, position, settings);
+        Animal parent = new Animal(genome, position, settings, 0);
 
-        Animal child = new Animal(genome, position, settings);
+        Animal child = new Animal(genome, position, settings, 0);
         parent.birthChild(child, 30);
 
         assertEquals(70, parent.getEnergy());
