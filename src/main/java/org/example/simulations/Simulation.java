@@ -31,7 +31,7 @@ public class Simulation implements Runnable {
                 case SWAP -> new GenomeSwap(settings);
                 case DEFAULT -> new Genome(settings);
             };
-            animals.add(new Animal(genome, new Vector2d(x, y), settings));
+            animals.add(new Animal(genome, new Vector2d(x, y), settings, 0));
         }
 
         for (Animal animal : animals) {
@@ -80,7 +80,7 @@ public class Simulation implements Runnable {
 
     public synchronized void resume() {
         paused = false;
-        notifyAll(); // powiadamia zatrzymane watki zeby wystartowaly ("wait" w srodku run)
+        notifyAll(); // powiadamia zatrzymane watki zeby wystartowaly (zatrzymane przez "wait" w srodku run)
     }
 
     public void stop() {

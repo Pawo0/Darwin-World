@@ -27,14 +27,14 @@ public class SimulationPresenter implements MapChangeListener {
     private void initialize() {
         System.out.println("SimulationPresenter initialized");
         settings = new SimulationSettings(
-                50,
-                100,
+                20,
+                20,
                 40,
                 7,
                 10,
                 true,
-                5,
-                600,
+                20,
+                40,
                 30,
                 30,
                 0,
@@ -129,8 +129,11 @@ public class SimulationPresenter implements MapChangeListener {
     @Override
     public void mapChanged(WorldMap worldMap, String message) {
         Platform.runLater(() -> {
-            napis.setText("Living animals" + message);
-            drawMap();
+            napis.setText("Living animals " + message);
+//            o ile to dziala tak jak mysle ze dziala
+            synchronized (this){
+                drawMap();
+            }
         });
     }
 }

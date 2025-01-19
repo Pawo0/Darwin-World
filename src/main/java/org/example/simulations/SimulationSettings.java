@@ -25,7 +25,22 @@ public class SimulationSettings {
 
 
 
-    public SimulationSettings(int mapWidth, int mapHeight, int startAmountOfGrass, int energyGainedFromEating, int dailyAmountGrowingGrass, boolean lifeGivingCorpses, int startAmountOfAnimals, int startAnimalEnergy, int energyNeededToCopulate, int energyUsedToCopulate, int minMutationAmount, int maxMutationAmount, MutationType specialMutation, int genomeLength, int refreshTime) {
+    public SimulationSettings(
+            int mapWidth,
+            int mapHeight,
+            int startAmountOfGrass,
+            int energyGainedFromEating,
+            int dailyAmountGrowingGrass,
+            boolean lifeGivingCorpses,
+            int startAmountOfAnimals,
+            int startAnimalEnergy,
+            int energyNeededToCopulate,
+            int energyUsedToCopulate,
+            int minMutationAmount,
+            int maxMutationAmount,
+            MutationType specialMutation,
+            int genomeLength,
+            int refreshTime) {
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
         this.lowerLeft = new Vector2d(0, 0);
