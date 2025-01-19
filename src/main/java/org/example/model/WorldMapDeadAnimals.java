@@ -12,6 +12,10 @@ public class WorldMapDeadAnimals extends WorldMap {
     private int width;
     private int height;
 
+    public List<Vector2d> getTmpFieldsWithPriority() {
+        return tmpFieldsWithPriority;
+    }
+
     public WorldMapDeadAnimals(SimulationSettings settings) {
         super(settings);
         this.width = settings.getMapWidth();
