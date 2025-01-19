@@ -41,7 +41,8 @@ public class SimulationPresenter implements MapChangeListener {
                 40,
                 MutationType.DEFAULT,
                 70,
-                100
+                100,
+                false
         );
         if (settings.isLifeGivingCorpses()) {
             map = new WorldMapDeadAnimals(settings);
@@ -51,6 +52,15 @@ public class SimulationPresenter implements MapChangeListener {
         this.simulation = new Simulation(settings, map);
     }
 
+    public void initializeWithSettings(SimulationSettings settings) {
+        this.settings = settings;
+        if (settings.isLifeGivingCorpses()) {
+            map = new WorldMapDeadAnimals(settings);
+        } else {
+            map = new WorldMap(settings);
+        }
+        this.simulation = new Simulation(settings, map);
+    }
 
     public void start() {
         napis.setText("Hello World!");
