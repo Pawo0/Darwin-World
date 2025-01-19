@@ -21,7 +21,8 @@ public class Main {
 ////        } while (map.liveAnimalsAmount() != 0);
 //        } while (map.liveAnimalsAmount() != 0 && i < 100);
 
-        Application.launch(SimulationApp.class, args);
+//        Application.launch(SimulationApp.class, args);
+        Application.launch(ParameterInputApp.class, args);
     }
 
 }

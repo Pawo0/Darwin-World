@@ -22,6 +22,7 @@ public class SimulationSettings {
     private final MutationType specialMutation;
     private final int genomeLength;
     private final int refreshTime;
+    private final boolean saveToCSV;
 
 
 
@@ -40,7 +41,8 @@ public class SimulationSettings {
             int maxMutationAmount,
             MutationType specialMutation,
             int genomeLength,
-            int refreshTime) {
+            int refreshTime,
+            boolean saveToCSV) {
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
         this.lowerLeft = new Vector2d(0, 0);
@@ -58,6 +60,7 @@ public class SimulationSettings {
         this.specialMutation = specialMutation;
         this.genomeLength = genomeLength;
         this.refreshTime = refreshTime;
+        this.saveToCSV = saveToCSV;
     }
 
     public int getMapWidth() {
@@ -122,5 +125,9 @@ public class SimulationSettings {
 
     public int getRefreshTime() {
         return refreshTime;
+    }
+
+    public boolean isSaveToCSV() {
+        return saveToCSV;
     }
 }

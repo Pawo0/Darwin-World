@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class WorldMapTest {
 
-    SimulationSettings settings = new SimulationSettings(10, 10, 0, 20, 1, false, 1, 100, 10, 1,0,0,MutationType.DEFAULT, 5, 400);
+    SimulationSettings settings = new SimulationSettings(10, 10, 0, 20, 1, false, 1, 100, 10, 1,0,0,MutationType.DEFAULT, 5, 400, false);
     Genome genome = new Genome(settings);
 
     @Test
