@@ -3,7 +3,11 @@ package org.example.simulations;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
@@ -22,6 +26,8 @@ public class SimulationPresenter implements MapChangeListener {
     private Simulation simulation;
     private SimulationSettings settings;
     private SimulationEngine engine;
+    private Image animalImage;
+    private Image grassImage = new Image(getClass().getResourceAsStream("/images/grass.png"));
 
     @FXML
     private void initialize() {
@@ -54,6 +60,8 @@ public class SimulationPresenter implements MapChangeListener {
 
     public void initializeWithSettings(SimulationSettings settings) {
         this.settings = settings;
+        animalImage = new Image(getClass().getResourceAsStream("/images/animal.png"));
+
         if (settings.isLifeGivingCorpses()) {
             map = new WorldMapDeadAnimals(settings);
         } else {
@@ -85,9 +93,45 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
     private void clearGrid() {
-        mapGrid.getChildren().retainAll(mapGrid.getChildren().getFirst()); // hack to retain visible grid lines
+        mapGrid.getChildren().retainAll(mapGrid.getChildren().getFirst());
         mapGrid.getColumnConstraints().clear();
         mapGrid.getRowConstraints().clear();
+    }
+
+    private GridPane createAnimalView(Animal animal, double cellSize) {
+        ImageView imageView = new ImageView(animalImage);
+        imageView.setFitWidth(cellSize * 0.8); // Make the image smaller
+        imageView.setFitHeight(cellSize * 0.8); // Make the image smaller
+
+        double energyRatio = (double) animal.getEnergy() / settings.getEnergyNeededToCopulate();
+        ProgressBar energyBar = new ProgressBar(energyRatio);
+        energyBar.setPrefWidth(cellSize * 0.8); // Match the width of the image
+
+        // Set the color of the progress bar based on the energy ratio
+        if (energyRatio > 1) {
+            energyBar.setStyle("-fx-accent: darkgreen;");
+        } else if (energyRatio < 0.2) {
+            energyBar.setStyle("-fx-accent: red;");
+        } else if (energyRatio < 0.4) {
+            energyBar.setStyle("-fx-accent: orange;");
+        } else if (energyRatio < 0.6) {
+            energyBar.setStyle("-fx-accent: yellow;");
+        } else if (energyRatio < 0.8) {
+            energyBar.setStyle("-fx-accent: lightgreen;");
+        } else {
+            energyBar.setStyle("-fx-accent: green;");
+        }
+
+        GridPane animalView = new GridPane();
+        animalView.add(imageView, 0, 0);
+        animalView.add(energyBar, 0, 1);
+
+        // Set alignment for the image and progress bar
+        GridPane.setHalignment(imageView, HPos.CENTER);
+        GridPane.setHalignment(energyBar, HPos.CENTER);
+        animalView.setAlignment(Pos.CENTER);
+
+        return animalView;
     }
 
     public void drawMap() {
@@ -97,28 +141,39 @@ public class SimulationPresenter implements MapChangeListener {
 
         clearGrid();
 
-
         for (int i = 0; i <= width; i++) {
             mapGrid.getColumnConstraints().add(new ColumnConstraints(cellSize));
         }
         for (int j = 0; j <= height; j++) {
             mapGrid.getRowConstraints().add(new RowConstraints(cellSize));
         }
-        for (int i = -1; i <= width-1; i++) {
-            for (int j = -1; j <= height-1; j++) {
+        for (int i = 0; i <= width - 1; i++) {
+            for (int j = 0; j <= height - 1; j++) {
                 Vector2d currentPosition = new Vector2d(i, j);
                 Label label = null;
                 Object object = null;
-                if (i == -1 && j == -1) {
-                    label = new Label("x/y");
-                } else if (i == -1) {
-                    label = new Label("" + currentPosition.getY());
-                } else if (j == -1) {
-                    label = new Label("" + currentPosition.getX());
-                } else if (this.map.isAnimalAt(currentPosition)) {
+//                if (i == -1 && j == -1) {
+//                    label = new Label("x/y");
+//                } else if (i == -1) {
+//                    label = new Label("" + currentPosition.getY());
+//                } else if (j == -1) {
+//                    label = new Label("" + currentPosition.getX());
+//                } else
+                if (this.map.isAnimalAt(currentPosition)) {
                     object = this.map.animalsAt(currentPosition).peek();
+                    if (object != null) {
+                        GridPane animalView = createAnimalView((Animal) object, cellSize);
+                        GridPane.setHalignment(animalView, HPos.CENTER);
+                        mapGrid.add(animalView, i + 1, j + 1, 1, 1);
+                        continue;
+                    }
                 } else if (this.map.isGrassAt(currentPosition)) {
-                    object = this.map.getGrassAt(currentPosition);
+                    ImageView grassView = new ImageView(grassImage);
+                    grassView.setFitWidth(cellSize);
+                    grassView.setFitHeight(cellSize);
+                    GridPane.setHalignment(grassView, HPos.CENTER);
+                    mapGrid.add(grassView, i + 1, j + 1, 1, 1);
+                    continue;
                 } else if (this.map.isDeadAnimalAt(currentPosition) && settings.isLifeGivingCorpses()) {
                     object = this.map.getDeadAnimals().get(currentPosition).peek();
                 } else {
@@ -127,14 +182,11 @@ public class SimulationPresenter implements MapChangeListener {
                 if (object != null) {
                     label = new Label(object.toString());
                 }
-//                label.setText("(" + currentPosition.getY() + "," + currentPosition.getX() + ")");
                 GridPane.setHalignment(label, HPos.CENTER);
                 mapGrid.add(label, i + 1, j + 1, 1, 1);
-
             }
         }
     }
-
 
     @Override
     public void mapChanged(WorldMap worldMap, String message) {
