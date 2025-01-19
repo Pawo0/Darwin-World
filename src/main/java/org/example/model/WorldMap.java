@@ -47,6 +47,7 @@ public class WorldMap implements WorldMapInterface {
         this.settings = settings;
         initGrassGrowingChance();
         grassGrows(settings.getStartAmountOfGrass());
+        System.out.println("WorldMap created");
     }
 
     public void nextDay() {
@@ -108,21 +109,12 @@ public class WorldMap implements WorldMapInterface {
         return true;
     }
 
-    private void removeLiveAnimal(Animal animal) {
-        Vector2d position = animal.getPosition();
-        liveAnimals.get(position).remove(animal);
-        if (liveAnimals.get(position).isEmpty()) {
-            liveAnimals.remove(position);
-        }
-    }
 
-    protected void removeDeadAnimal(Animal animal) {
-//        System.out.println("removing dead animal");
+    protected void removeAnimal(Animal animal, Map<Vector2d, PriorityQueue<Animal>> animals) {
         Vector2d position = animal.getPosition();
-        deadAnimals.get(position).remove(animal);
-        if (deadAnimals.get(position).isEmpty()) {
-            deadAnimals.remove(position);
-//            System.out.println("dead animals empty");
+        animals.get(position).remove(animal);
+        if (animals.get(position).isEmpty()) {
+            animals.remove(position);
         }
     }
 
@@ -134,11 +126,9 @@ public class WorldMap implements WorldMapInterface {
             animalsToMove.addAll(animals);
         }
         for (Animal animal : animalsToMove) {
-//            liveAnimals.get(animal.getPosition()).remove(animal);
-            removeLiveAnimal(animal);
-//            System.out.println("animal moved from: " + animal.getPosition());
+//            removeLiveAnimal(animal);
+            removeAnimal(animal, liveAnimals);
             animal.move();
-//            System.out.println("animal moved to: " + animal.getPosition());
             this.place(animal);
         }
     }
@@ -278,7 +268,7 @@ public class WorldMap implements WorldMapInterface {
         }
         for (Animal animal : animalsToRemove) {
             Vector2d position = animal.getPosition();
-            removeLiveAnimal(animal);
+            removeAnimal(animal, liveAnimals);
             deadAnimals.putIfAbsent(position, new PriorityQueue<>(animalComparator));
             deadAnimals.get(position).add(animal);
         }
