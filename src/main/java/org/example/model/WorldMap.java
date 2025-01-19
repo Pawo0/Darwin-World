@@ -60,14 +60,6 @@ public class WorldMap implements WorldMapInterface {
         notifyObservers(String.valueOf(liveAnimalsAmount()));
     }
 
-    public Map<Vector2d, Grass> getGrasses() {
-        return grasses;
-    }
-
-    public Map<Vector2d, PriorityQueue<Animal>> getDeadAnimals() {
-        return deadAnimals;
-    }
-
     protected void allAnimalsAgeUp() {
         for (PriorityQueue<Animal> animals : liveAnimals.values()) {
             for (Animal animal : animals) {
@@ -188,10 +180,8 @@ public class WorldMap implements WorldMapInterface {
                 double priority = (Math.random() * 100);
                 if (priority <= 80) {
                     grassGrowOnFields(allFieldsWithPriority);
-//                    System.out.println("Z");
                 } else {
                     grassGrowOnFields(fieldsWithoutGrassGrowPriority);
-//                    System.out.println("BEZ");
                 }
             }
         }
@@ -235,6 +225,7 @@ public class WorldMap implements WorldMapInterface {
             case DEFAULT -> new Genome(settings);
         };
         Animal child = new Animal(genome, position, this.settings, this.currentDay);
+        child.setParents(List.of(animal1, animal2));
         animal1.birthChild(child, energyUsedToCopulate);
         animal2.birthChild(child, energyUsedToCopulate);
         return child;
@@ -297,6 +288,22 @@ public class WorldMap implements WorldMapInterface {
     @Override
     public UUID getId() {
         return this.id;
+    }
+
+    public Map<Vector2d, Grass> getGrasses() {
+        return grasses;
+    }
+
+    public int getCurrentDay() {
+        return currentDay;
+    }
+
+    public Map<Vector2d, PriorityQueue<Animal>> getLiveAnimals() {
+        return liveAnimals;
+    }
+
+    public Map<Vector2d, PriorityQueue<Animal>> getDeadAnimals() {
+        return deadAnimals;
     }
 
     public void addObserver(MapChangeListener observer) {

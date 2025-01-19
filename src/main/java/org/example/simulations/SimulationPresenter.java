@@ -9,11 +9,29 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import org.example.model.*;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 public class SimulationPresenter implements MapChangeListener {
     @FXML
     private Label napis;
+    @FXML
+    private Label day;
+    @FXML
+    private Label liveAnimalsAmount;
+    @FXML
+    private Label deadAnimalsAmount;
+    @FXML
+    private Label grassAmount;
+    @FXML
+    private Label dominantGenome;
+    @FXML
+    private Label averageEnergy;
+    @FXML
+    private Label averageLifeSpan;
+    @FXML
+    private Label averageDescendantAmount;
 
     @FXML
     private GridPane mapGrid;
@@ -22,6 +40,7 @@ public class SimulationPresenter implements MapChangeListener {
     private Simulation simulation;
     private SimulationSettings settings;
     private SimulationEngine engine;
+    private SimulationStats stats;
 
     @FXML
     private void initialize() {
@@ -32,16 +51,16 @@ public class SimulationPresenter implements MapChangeListener {
                 40,
                 7,
                 10,
-                true,
+                false,
+                60,
+                33,
+                30,
                 20,
-                40,
-                30,
-                30,
                 0,
                 40,
                 MutationType.DEFAULT,
-                70,
-                100
+                5,
+                400
         );
         if (settings.isLifeGivingCorpses()) {
             map = new WorldMapDeadAnimals(settings);
@@ -49,6 +68,8 @@ public class SimulationPresenter implements MapChangeListener {
             map = new WorldMap(settings);
         }
         this.simulation = new Simulation(settings, map);
+        this.stats = new SimulationStats(map);
+        drawMap();
     }
 
 
@@ -66,6 +87,7 @@ public class SimulationPresenter implements MapChangeListener {
                 throw new RuntimeException(e);
             }
             map.addObserver(this);
+            this.setStats();
             drawMap();
         }
     }
@@ -125,6 +147,27 @@ public class SimulationPresenter implements MapChangeListener {
         }
     }
 
+    private void setStats(){
+
+        this.stats = new SimulationStats(map);
+        day.setText(String.valueOf(stats.getDay()));
+        liveAnimalsAmount.setText(String.valueOf(stats.getLiveAnimalsAmount()));
+        deadAnimalsAmount.setText(String.valueOf(stats.getDeadAnimalsAmount()));
+        grassAmount.setText(String.valueOf(stats.getGrassAmount()));
+        dominantGenome.setText(String.valueOf(stats.getDominantGenome()));
+        averageEnergy.setText(String.valueOf(round(stats.getAverageEnergy(),2)));
+        averageLifeSpan.setText(String.valueOf(round(stats.getAverageLifeSpan(),2)));
+        averageDescendantAmount.setText(String.valueOf(round(stats.getAverageDescendantAmount(),2)));
+    }
+
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = BigDecimal.valueOf(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
+    }
+
 
     @Override
     public void mapChanged(WorldMap worldMap, String message) {
@@ -133,6 +176,7 @@ public class SimulationPresenter implements MapChangeListener {
 //            o ile to dziala tak jak mysle ze dziala
             synchronized (this){
                 drawMap();
+                setStats();
             }
         });
     }

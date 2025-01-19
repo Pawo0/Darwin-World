@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 public class WorldMapDeadAnimals extends WorldMap {
-
+// todo miec liste z martwymi zwierzakami jak w WorldMap i  dodatkowa martwych zwierzat, ktore beda sie rozkladac po x dniach
     private final List<Vector2d> tmpFieldsWithPriority = new ArrayList<>();
     private int width;
     private int height;
