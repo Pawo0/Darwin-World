@@ -5,6 +5,8 @@ import org.example.model.Genome;
 import org.example.model.Vector2d;
 import org.example.model.WorldMap;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -37,7 +39,31 @@ public class SimulationStats {
         this.calculateAverageEnergy();
         this.calculateAverageLifeSpan();
         this.calculateAverageDescendantAmount();
+    }
 
+    public SimulationStats(WorldMap map, String file){
+        this(map);
+        saveDayToCsv(file);
+    }
+
+    private void saveDayToCsv(String file){
+        try (FileWriter writer = new FileWriter(file, true)){
+            if (day == 0){
+                writer.write("Day,Live Animals,Dead Animals,Grass Amount,Dominant Genome,Average Energy,Average Life Span,Average Descendant Amount\n");
+            }
+            writer.write(String.format("%d,%d,%d,%d,%s,%.2f,%.2f,%.2f\n",
+                    day,
+                    liveAnimalsAmount,
+                    deadAnimalsAmount,
+                    grassAmount,
+                    dominantGenome != null ? dominantGenome.toString() : "None",
+                    averageEnergy,
+                    averageLifeSpan,
+                    averageDescendantAmount
+            ));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

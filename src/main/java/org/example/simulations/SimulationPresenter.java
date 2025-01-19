@@ -148,8 +148,12 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
     private void setStats(){
-
-        this.stats = new SimulationStats(map);
+        if (true) {
+            this.stats = new SimulationStats(map, "stats/" +map.getId() + "-stats.csv");
+        }
+        else{
+            this.stats = new SimulationStats(map);
+        }
         day.setText(String.valueOf(stats.getDay()));
         liveAnimalsAmount.setText(String.valueOf(stats.getLiveAnimalsAmount()));
         deadAnimalsAmount.setText(String.valueOf(stats.getDeadAnimalsAmount()));
