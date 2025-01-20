@@ -125,7 +125,7 @@ public class Animal implements WorldElement {
     }
 
     public int getGeneIndex() {
-        return geneIndex;
+        return geneIndex % genotype.getGenomeSize();
     }
 
     public int getGrassEaten() {
