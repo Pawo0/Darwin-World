@@ -21,6 +21,7 @@ public class SimulationStats {
     private int liveAnimalsAmount;
     private int grassAmount;
     private Genome dominantGenome;
+    private int dominantGenomeAmount;
     private double averageEnergy;
     private double averageLifeSpan;
 //    private int averageAge;
@@ -74,11 +75,7 @@ public class SimulationStats {
                 genomeCounter.put(animal.getGenotype(), genomeCounter.getOrDefault(animal.getGenotype(), 0) + 1);
             }
         }
-        for (PriorityQueue<Animal> animals : deadAnimals.values()) {
-            for (Animal animal : animals) {
-                genomeCounter.put(animal.getGenotype(), genomeCounter.getOrDefault(animal.getGenotype(), 0) + 1);
-            }
-        }
+        this.dominantGenomeAmount = genomeCounter.values().stream().max(Integer::compareTo).orElse(0);
         this.dominantGenome = genomeCounter.entrySet().stream().max(Map.Entry.comparingByValue()).map(Map.Entry::getKey).orElse(null);
     }
 
@@ -111,6 +108,10 @@ public class SimulationStats {
 
     public Genome getDominantGenome() {
         return dominantGenome;
+    }
+
+    public int getDominantGenomeAmount() {
+        return dominantGenomeAmount;
     }
 
     public double getAverageEnergy() {

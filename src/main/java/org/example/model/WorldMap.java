@@ -61,6 +61,10 @@ public class WorldMap implements WorldMapInterface {
         notifyObservers(String.valueOf(liveAnimalsAmount()));
     }
 
+    public List<Vector2d> getFieldsWithGrassGrowPriority() {
+        return fieldsWithGrassGrowPriority;
+    }
+
     protected void allAnimalsAgeUp() {
         for (PriorityQueue<Animal> animals : liveAnimals.values()) {
             for (Animal animal : animals) {

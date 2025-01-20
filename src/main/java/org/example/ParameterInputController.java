@@ -65,8 +65,8 @@ public class ParameterInputController {
         maxMutationAmountField.setText("40");
         mutationTypeField.getItems().setAll(MutationType.values());
         mutationTypeField.setValue(MutationType.DEFAULT);
-        genomeLengthField.setText("70");
-        refreshTimeField.setText("100");
+        genomeLengthField.setText("5");
+        refreshTimeField.setText("500");
         saveToCSVField.setSelected(false);
     }
 

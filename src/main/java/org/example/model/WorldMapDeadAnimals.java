@@ -5,7 +5,6 @@ import org.example.simulations.SimulationSettings;
 import java.util.*;
 
 public class WorldMapDeadAnimals extends WorldMap {
-// todo miec liste z martwymi zwierzakami jak w WorldMap i  dodatkowa martwych zwierzat, ktore beda sie rozkladac po x dniach
     private final List<Vector2d> tmpFieldsWithPriority = new ArrayList<>();
     private final int width;
     private final int height;
@@ -21,6 +20,13 @@ public class WorldMapDeadAnimals extends WorldMap {
         this.height = settings.getMapHeight();
         this.recentDeadAnimals = new HashMap<>();
     }
+    @Override
+    public List<Vector2d> getFieldsWithGrassGrowPriority() {
+        List<Vector2d> allFieldsWithPriority = new ArrayList<>();
+        if (tmpFieldsWithPriority != null) allFieldsWithPriority.addAll(tmpFieldsWithPriority);
+        if (fieldsWithGrassGrowPriority != null) allFieldsWithPriority.addAll(fieldsWithGrassGrowPriority);
+        return allFieldsWithPriority;
+    }
 
     @Override
     public void nextDay() {
@@ -29,7 +35,8 @@ public class WorldMapDeadAnimals extends WorldMap {
     }
 
     public void clearDeadBodies() {
-//    usuwanie starszych cial niz 5 dni, czyszczenie tmpFieldsWithPriority i dodanie ich na nowo (z obkrojonej listy)
+//        todo jak sie bedzie chcialo dodac do ustawien
+//    usuwanie starszych cial niz 10 dni, czyszczenie tmpFieldsWithPriority i dodanie ich na nowo (z obkrojonej listy)
         List<Animal> animalsToRemove = new ArrayList<>();
         for (PriorityQueue<Animal> animals : this.recentDeadAnimals.values()) {
             for (Animal animal : animals) {
@@ -74,8 +81,8 @@ public class WorldMapDeadAnimals extends WorldMap {
     private void addGrassPriorityAroundDeadBody(Vector2d position){
         int x = position.getX();
         int y = position.getY();
-        for (int i = x - 2; i <= x + 2; i++) {
-            for (int j = y - 2; j <= y + 2; j++) {
+        for (int i = x - 1; i <= x + 1; i++) {
+            for (int j = y - 1; j <= y + 1; j++) {
                 if (i >= 0 && i < this.width && j >= 0 && j < this.height && !this.isGrassAt(new Vector2d(i, j)) && !this.tmpFieldsWithPriority.contains(new Vector2d(i, j))){
                     tmpFieldsWithPriority.add(new Vector2d(i, j));
                 }
@@ -115,9 +122,7 @@ public class WorldMapDeadAnimals extends WorldMap {
 
     @Override
     public void grassGrows(int grassAmount) {
-        List<Vector2d> allFieldsWithPriority = new ArrayList<>();
-        if (tmpFieldsWithPriority != null) allFieldsWithPriority.addAll(tmpFieldsWithPriority);
-        if (fieldsWithGrassGrowPriority != null) allFieldsWithPriority.addAll(fieldsWithGrassGrowPriority);
+        List<Vector2d> allFieldsWithPriority = getFieldsWithGrassGrowPriority();
         generateGrassFromGivenFields(allFieldsWithPriority, grassAmount);
     }
 

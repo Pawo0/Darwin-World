@@ -29,9 +29,10 @@
                     <Label text="Dead animals amount: " GridPane.columnIndex="0" GridPane.rowIndex="2" />
                     <Label text="Grass amount: " GridPane.columnIndex="0" GridPane.rowIndex="3" />
                     <Label text="Dominant Genome: " GridPane.columnIndex="0" GridPane.rowIndex="4" />
-                    <Label text="Average energy: " GridPane.columnIndex="0" GridPane.rowIndex="5" />
-                    <Label text="Average lifespan: " GridPane.columnIndex="0" GridPane.rowIndex="6" />
-                    <Label text="Average descendant amount: " GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                    <Label text="Dominant Genome amount: " GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                    <Label text="Average energy: " GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                    <Label text="Average lifespan: " GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                    <Label text="Average descendant amount: " GridPane.columnIndex="0" GridPane.rowIndex="8" />
 
 
                     <Label fx:id="day" GridPane.columnIndex="1" GridPane.rowIndex="0" text="0" />
@@ -39,9 +40,10 @@
                     <Label fx:id="deadAnimalsAmount" GridPane.columnIndex="1" GridPane.rowIndex="2" text="0" />
                     <Label fx:id="grassAmount" GridPane.columnIndex="1" GridPane.rowIndex="3" text="0" />
                     <Label fx:id="dominantGenome" GridPane.columnIndex="1" GridPane.rowIndex="4" text="0" />
-                    <Label fx:id="averageEnergy" GridPane.columnIndex="1" GridPane.rowIndex="5" text="0" />
-                    <Label fx:id="averageLifeSpan" GridPane.columnIndex="1" GridPane.rowIndex="6" text="0" />
-                    <Label fx:id="averageDescendantAmount" GridPane.columnIndex="1" GridPane.rowIndex="7" text="0" />
+                    <Label fx:id="dominantGenomeAmount" GridPane.columnIndex="1" GridPane.rowIndex="5" text="0" />
+                    <Label fx:id="averageEnergy" GridPane.columnIndex="1" GridPane.rowIndex="6" text="0" />
+                    <Label fx:id="averageLifeSpan" GridPane.columnIndex="1" GridPane.rowIndex="7" text="0" />
+                    <Label fx:id="averageDescendantAmount" GridPane.columnIndex="1" GridPane.rowIndex="8" text="0" />
 
                     <rowConstraints>
                         <RowConstraints />

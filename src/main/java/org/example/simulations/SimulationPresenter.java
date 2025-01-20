@@ -11,12 +11,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.shape.Rectangle;
 import org.example.model.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
-import java.util.Vector;
+import java.util.Map;
+import java.util.PriorityQueue;
 
 public class SimulationPresenter implements MapChangeListener {
     @FXML
@@ -31,6 +33,8 @@ public class SimulationPresenter implements MapChangeListener {
     private Label grassAmount;
     @FXML
     private Label dominantGenome;
+    @FXML
+    private Label dominantGenomeAmount;
     @FXML
     private Label averageEnergy;
     @FXML
@@ -77,40 +81,8 @@ public class SimulationPresenter implements MapChangeListener {
 
     private Animal followedAnimal;
 
-    @FXML
-    private void initialize() {
-        System.out.println("SimulationPresenter initialized");
-        settings = new SimulationSettings(
-                20,
-                20,
-                40,
-                7,
-                10,
-                false,
-                60,
-                33,
-                30,
-                20,
-                0,
-                40,
-                MutationType.DEFAULT,
-                70,
-                100,
-                false
+    private boolean isPaused = true;
 
-        );
-        if (settings.isLifeGivingCorpses()) {
-            map = new WorldMapDeadAnimals(settings);
-        } else {
-            map = new WorldMap(settings);
-        }
-        this.simulation = new Simulation(settings, map);
-        this.stats = new SimulationStats(map);
-        height = settings.getMapHeight();
-        width = settings.getMapWidth();
-        cellSize = Math.min(600 / (height + 1), 600 / (width + 1));
-        drawMap();
-    }
 
     public void initializeWithSettings(SimulationSettings settings) {
         this.settings = settings;
@@ -122,6 +94,18 @@ public class SimulationPresenter implements MapChangeListener {
             map = new WorldMap(settings);
         }
         this.simulation = new Simulation(settings, map);
+        height = settings.getMapHeight();
+        width = settings.getMapWidth();
+        cellSize = Math.min(600 / (height), 600 / (width));
+
+        // później i tak jest nadpisywane ale musi byc bo inaczej nie dziala xd
+        if (settings.isSaveToCSV()) {
+            this.stats = new SimulationStats(map, "stats/" + map.getId() + "-stats.csv");
+        } else {
+            this.stats = new SimulationStats(map);
+        }
+
+        drawMap();
     }
 
     public void start() {
@@ -139,12 +123,39 @@ public class SimulationPresenter implements MapChangeListener {
             }
             map.addObserver(this);
             this.setStats();
-            drawMap();
+//            drawMap();
         }
+        isPaused = false;
     }
 
     public void pause() {
         engine.pause();
+        isPaused = true;
+        mapChanged(map, "paused");
+    }
+
+    private void drawInfoGrid(){
+        List<Vector2d> fieldsWithPriority =  map.getFieldsWithGrassGrowPriority();
+        for (Vector2d position : fieldsWithPriority) {
+            Rectangle rectangle = new Rectangle(cellSize, cellSize);
+            rectangle.setStyle("-fx-fill: rgba(0, 255, 0, 0.2);");
+            rectangle.setMouseTransparent(true);
+            GridPane.setHalignment(rectangle, HPos.CENTER);
+            mapGrid.add(rectangle, position.getX(), position.getY(), 1, 1);
+        }
+
+        Genome dominantGenome =  stats.getDominantGenome();
+        for (PriorityQueue<Animal> animals : map.getLiveAnimals().values()) {
+            for (Animal animal : animals) {
+                if (animal.getGenotype().equals(dominantGenome)) {
+                    Rectangle rectangle = new Rectangle(cellSize, cellSize);
+                    rectangle.setStyle("-fx-fill: rgba(255, 0, 0, 0.2);");
+                    rectangle.setMouseTransparent(true);
+                    GridPane.setHalignment(rectangle, HPos.CENTER);
+                    mapGrid.add(rectangle, animal.getPosition().getX(), animal.getPosition().getY(), 1, 1);
+                }
+            }
+        }
     }
 
     private void clearGrid() {
@@ -160,7 +171,7 @@ public class SimulationPresenter implements MapChangeListener {
             krecikView.setFitWidth(cellSize);
             krecikView.setFitHeight(cellSize);
             GridPane.setHalignment(krecikView, HPos.CENTER);
-            mapGrid.add(krecikView, position.getX() + 1, position.getY() + 1, 1, 1);
+            mapGrid.add(krecikView, position.getX(), position.getY(), 1, 1);
             GridPane animalView = new GridPane();
             animalView.add(krecikView, 0, 0);
             return animalView;
@@ -202,16 +213,13 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
     public void drawMap() {
-//        int height = settings.getMapHeight();
-//        int width = settings.getMapWidth();
-//        double cellSize = Math.min(600 / (height + 1), 600 / (width + 1));
 
         clearGrid();
 
-        for (int i = 0; i <= width; i++) {
+        for (int i = 0; i <= width-1; i++) {
             mapGrid.getColumnConstraints().add(new ColumnConstraints(cellSize));
         }
-        for (int j = 0; j <= height; j++) {
+        for (int j = 0; j <= height-1; j++) {
             mapGrid.getRowConstraints().add(new RowConstraints(cellSize));
         }
         for (int i = 0; i <= width - 1; i++) {
@@ -225,7 +233,7 @@ public class SimulationPresenter implements MapChangeListener {
                         Animal animal = (Animal) object;
                         GridPane animalView = createAnimalView(animal, cellSize);
                         GridPane.setHalignment(animalView, HPos.CENTER);
-                        mapGrid.add(animalView, i + 1, j + 1, 1, 1);
+                        mapGrid.add(animalView, i, j, 1, 1);
                         animalView.setOnMouseClicked(event -> {
                             handleAnimalClick(animal);
                         });
@@ -237,7 +245,7 @@ public class SimulationPresenter implements MapChangeListener {
                     grassView.setFitWidth(cellSize);
                     grassView.setFitHeight(cellSize);
                     GridPane.setHalignment(grassView, HPos.CENTER);
-                    mapGrid.add(grassView, i + 1, j + 1, 1, 1);
+                    mapGrid.add(grassView, i, j, 1, 1);
                     continue;
 
                 } else if (this.map.isDeadAnimalAt(currentPosition) && settings.isLifeGivingCorpses()) {
@@ -249,7 +257,7 @@ public class SimulationPresenter implements MapChangeListener {
                     label = new Label(object.toString());
                 }
                 GridPane.setHalignment(label, HPos.CENTER);
-                mapGrid.add(label, i + 1, j + 1, 1, 1);
+                mapGrid.add(label, i, j, 1, 1);
             }
         }
         if (followedAnimal != null) {
@@ -259,6 +267,9 @@ public class SimulationPresenter implements MapChangeListener {
         }
         else {
             animalStats.visibleProperty().setValue(false);
+        }
+        if (isPaused){
+            drawInfoGrid();
         }
     }
 
@@ -282,7 +293,7 @@ public class SimulationPresenter implements MapChangeListener {
             krecikView.setFitWidth(cellSize);
             krecikView.setFitHeight(cellSize);
             GridPane.setHalignment(krecikView, HPos.CENTER);
-            mapGrid.add(krecikView, position.getX() + 1, position.getY() + 1, 1, 1);
+            mapGrid.add(krecikView, position.getX(), position.getY(), 1, 1);
         }
     }
 
@@ -318,6 +329,7 @@ public class SimulationPresenter implements MapChangeListener {
         deadAnimalsAmount.setText(String.valueOf(stats.getDeadAnimalsAmount()));
         grassAmount.setText(String.valueOf(stats.getGrassAmount()));
         dominantGenome.setText(String.valueOf(stats.getDominantGenome()));
+        dominantGenomeAmount.setText(String.valueOf(stats.getDominantGenomeAmount()));
         averageEnergy.setText(String.valueOf(round(stats.getAverageEnergy(),2)));
         averageLifeSpan.setText(String.valueOf(round(stats.getAverageLifeSpan(),2)));
         averageDescendantAmount.setText(String.valueOf(round(stats.getAverageDescendantAmount(),2)));
