@@ -4,6 +4,8 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
@@ -83,6 +85,13 @@ public class SimulationPresenter implements MapChangeListener {
 
     private boolean isPaused = true;
 
+    @FXML
+    private LineChart<Number, Number> animalPopulationChart;
+    private XYChart.Series<Number, Number> animalPopulationSeries;
+
+    @FXML
+    private LineChart<Number, Number> grassPopulationChart;
+    private XYChart.Series<Number, Number> grassPopulationSeries;
 
     public void initializeWithSettings(SimulationSettings settings) {
         this.settings = settings;
@@ -104,7 +113,13 @@ public class SimulationPresenter implements MapChangeListener {
         } else {
             this.stats = new SimulationStats(map);
         }
+        animalPopulationSeries = new XYChart.Series<>();
+        animalPopulationSeries.setName("Live Animals");
+        animalPopulationChart.getData().add(animalPopulationSeries);
 
+        grassPopulationSeries = new XYChart.Series<>();
+        grassPopulationSeries.setName("Grass");
+        grassPopulationChart.getData().add(grassPopulationSeries);
         drawMap();
     }
 
@@ -354,6 +369,13 @@ public class SimulationPresenter implements MapChangeListener {
         return bd.doubleValue();
     }
 
+    private void setCharts(){
+        int currentDay = stats.getDay();
+        int liveAnimals = stats.getLiveAnimalsAmount();
+        int grass = stats.getGrassAmount();
+        animalPopulationSeries.getData().add(new XYChart.Data<>(currentDay, liveAnimals));
+        grassPopulationSeries.getData().add(new XYChart.Data<>(currentDay, grass));
+    }
 
     @Override
     public void mapChanged(WorldMap worldMap, String message) {
@@ -363,6 +385,8 @@ public class SimulationPresenter implements MapChangeListener {
             synchronized (this){
                 drawMap();
                 setStats();
+                setCharts();
+
             }
         });
     }

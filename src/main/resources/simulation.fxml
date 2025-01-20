@@ -9,24 +9,58 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             minHeight="750.0" minWidth="1000.0"
             fx:controller="org.example.simulations.SimulationPresenter"
-            stylesheets="style.css"
->
+            stylesheets="style.css">
+
+    <!-- Główna zawartość -->
     <center>
-        <HBox styleClass="main">
-            <GridPane fx:id="mapGrid" gridLinesVisible="true" alignment="CENTER">
-            </GridPane>
-            <VBox styleClass="stats-section">
-                <VBox styleClass="grid-style ">
+        <HBox styleClass="main" spacing="20">
+            <!-- Sekcja wykresu -->
+            <VBox spacing="15">
+                <VBox styleClass="grid-style">
+                    <Label text="Population over time" />
+                    <LineChart fx:id="animalPopulationChart" title="Live Animals" createSymbols="false" styleClass="chart-style">
+                        <xAxis>
+                            <NumberAxis label="Day" />
+                        </xAxis>
+                        <yAxis>
+                            <NumberAxis label="Number of Animals" />
+                        </yAxis>
+                    </LineChart>
+                </VBox>
+                <VBox styleClass="grid-style">
+                    <Label text="Grass over time" />
+                    <LineChart fx:id="grassPopulationChart" title="Grass" createSymbols="false" styleClass="chart-style">
+                        <xAxis>
+                            <NumberAxis label="Day" />
+                        </xAxis>
+                        <yAxis>
+                            <NumberAxis label="Amount of Grass" />
+                        </yAxis>
+                    </LineChart>
+                </VBox>
+            </VBox>
+
+            <!-- Siatka mapy -->
+            <GridPane fx:id="mapGrid" gridLinesVisible="true" alignment="CENTER" styleClass="grid-style" prefWidth="400" prefHeight="400"/>
+
+            <!-- Statystyki -->
+            <VBox spacing="15" styleClass="stats-section">
+                <!-- Statystyki mapy -->
+                <VBox styleClass="grid-style">
                     <Label text="Map statistics" styleClass="header"/>
-                    <GridPane gridLinesVisible="true" >
+                    <GridPane gridLinesVisible="true">
                         <columnConstraints>
                             <ColumnConstraints maxWidth="150" minWidth="150" prefWidth="150"/>
                             <ColumnConstraints maxWidth="100" minWidth="100" prefWidth="100"/>
                         </columnConstraints>
+
+                        <!-- Dane mapy -->
                         <Label text="Day: " GridPane.columnIndex="0" GridPane.rowIndex="0"/>
                         <Label text="Live animals amount: " GridPane.columnIndex="0" GridPane.rowIndex="1"/>
                         <Label text="Dead animals amount: " GridPane.columnIndex="0" GridPane.rowIndex="2"/>
@@ -37,7 +71,7 @@
                         <Label text="Average lifespan: " GridPane.columnIndex="0" GridPane.rowIndex="7"/>
                         <Label text="Average descendant amount: " GridPane.columnIndex="0" GridPane.rowIndex="8"/>
 
-
+                        <!-- Dane dynamiczne -->
                         <Label fx:id="day" GridPane.columnIndex="1" GridPane.rowIndex="0" text="0"/>
                         <Label fx:id="liveAnimalsAmount" GridPane.columnIndex="1" GridPane.rowIndex="1" text="0"/>
                         <Label fx:id="deadAnimalsAmount" GridPane.columnIndex="1" GridPane.rowIndex="2" text="0"/>
@@ -47,42 +81,29 @@
                         <Label fx:id="averageEnergy" GridPane.columnIndex="1" GridPane.rowIndex="6" text="0"/>
                         <Label fx:id="averageLifeSpan" GridPane.columnIndex="1" GridPane.rowIndex="7" text="0"/>
                         <Label fx:id="averageDescendantAmount" GridPane.columnIndex="1" GridPane.rowIndex="8" text="0"/>
-
-                        <rowConstraints>
-                            <RowConstraints/>
-                            <RowConstraints/>
-                            <RowConstraints/>
-                            <RowConstraints/>
-                            <RowConstraints/>
-                            <RowConstraints/>
-                            <RowConstraints/>
-                            <RowConstraints/>
-                            <RowConstraints/>
-                        </rowConstraints>
-
                     </GridPane>
-
                 </VBox>
+
+                <!-- Statystyki zwierząt -->
                 <VBox styleClass="grid-style">
-
-
-                    <Label text="Animal statistics"  styleClass="header"/>
-
-                    <GridPane fx:id="animalStats" gridLinesVisible="true" visible="true">
+                    <Label text="Animal statistics" styleClass="header"/>
+                    <GridPane fx:id="animalStats" gridLinesVisible="true">
                         <columnConstraints>
                             <ColumnConstraints maxWidth="150" minWidth="150" prefWidth="150"/>
                             <ColumnConstraints maxWidth="100" minWidth="100" prefWidth="100"/>
                         </columnConstraints>
+
+                        <!-- Dane zwierząt -->
                         <Label text="Genome: " GridPane.columnIndex="0" GridPane.rowIndex="0"/>
                         <Label text="Active genome: " GridPane.columnIndex="0" GridPane.rowIndex="1"/>
                         <Label text="Energy: " GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-                        <Label text="Eaten grass" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                        <Label text="Eaten grass: " GridPane.columnIndex="0" GridPane.rowIndex="3"/>
                         <Label text="Children cnt: " GridPane.columnIndex="0" GridPane.rowIndex="4"/>
                         <Label text="Descendants cnt: " GridPane.columnIndex="0" GridPane.rowIndex="5"/>
                         <Label text="Age: " GridPane.columnIndex="0" GridPane.rowIndex="6"/>
                         <Label text="Dead day: " GridPane.columnIndex="0" GridPane.rowIndex="7"/>
 
-
+                        <!-- Dane dynamiczne -->
                         <Label fx:id="animalGenome" GridPane.columnIndex="1" GridPane.rowIndex="0" text="0"/>
                         <Label fx:id="animalActiveGenome" GridPane.columnIndex="1" GridPane.rowIndex="1" text="0"/>
                         <Label fx:id="animalEnergy" GridPane.columnIndex="1" GridPane.rowIndex="2" text="0"/>
@@ -91,28 +112,16 @@
                         <Label fx:id="animalDescendantsAmount" GridPane.columnIndex="1" GridPane.rowIndex="5" text="0"/>
                         <Label fx:id="animalLifeSpan" GridPane.columnIndex="1" GridPane.rowIndex="6" text="0"/>
                         <Label fx:id="animalDeathDay" GridPane.columnIndex="1" GridPane.rowIndex="7" text="0"/>
-
-                        <rowConstraints>
-                            <RowConstraints/>
-                            <RowConstraints/>
-                            <RowConstraints/>
-                            <RowConstraints/>
-                            <RowConstraints/>
-                            <RowConstraints/>
-                            <RowConstraints/>
-                            <RowConstraints/>
-                            <RowConstraints/>
-                        </rowConstraints>
-
                     </GridPane>
                 </VBox>
-
             </VBox>
         </HBox>
     </center>
+
+    <!-- Dolna sekcja -->
     <bottom>
         <VBox alignment="CENTER" spacing="10">
-            <Label fx:id="napis" text="Manage" textAlignment="CENTER"/>
+            <Label fx:id="napis" text="Manage" styleClass="header"/>
             <HBox spacing="10" alignment="CENTER">
                 <Button text="Start" onAction="#start"/>
                 <Button text="Pause" onAction="#pause"/>
