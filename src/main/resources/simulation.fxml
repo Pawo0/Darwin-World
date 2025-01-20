@@ -22,7 +22,7 @@
         <HBox styleClass="main" spacing="20">
             <!-- Sekcja wykresu -->
             <VBox spacing="15">
-                <VBox styleClass="grid-style">
+                <VBox styleClass="grid-style" fx:id="animalPopulationChartBox"  >
                     <Label text="Population over time" />
                     <LineChart fx:id="animalPopulationChart" title="Live Animals" createSymbols="false" styleClass="chart-style">
                         <xAxis>
@@ -33,7 +33,7 @@
                         </yAxis>
                     </LineChart>
                 </VBox>
-                <VBox styleClass="grid-style">
+                <VBox styleClass="grid-style" fx:id="grassPopulationChartBox" managed="false">
                     <Label text="Grass over time" />
                     <LineChart fx:id="grassPopulationChart" title="Grass" createSymbols="false" styleClass="chart-style">
                         <xAxis>
@@ -62,9 +62,9 @@
 
                         <!-- Dane mapy -->
                         <Label text="Day: " GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                        <Label text="Live animals amount: " GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                        <Label text="Live animals amount: " onMouseClicked="#showAnimalPopulationChart" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
                         <Label text="Dead animals amount: " GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-                        <Label text="Grass amount: " GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                        <Label text="Grass amount: " onMouseClicked="#showGrassPopulationChart" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
                         <Label text="Dominant Genome: " GridPane.columnIndex="0" GridPane.rowIndex="4"/>
                         <Label text="Dominant Genome amount: " GridPane.columnIndex="0" GridPane.rowIndex="5"/>
                         <Label text="Average energy: " GridPane.columnIndex="0" GridPane.rowIndex="6"/>

@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import org.example.model.*;
 
@@ -86,12 +87,32 @@ public class SimulationPresenter implements MapChangeListener {
     private boolean isPaused = true;
 
     @FXML
+    private VBox animalPopulationChartBox;
+    @FXML
     private LineChart<Number, Number> animalPopulationChart;
     private XYChart.Series<Number, Number> animalPopulationSeries;
 
     @FXML
+    private VBox grassPopulationChartBox;
+    @FXML
     private LineChart<Number, Number> grassPopulationChart;
     private XYChart.Series<Number, Number> grassPopulationSeries;
+
+    @FXML
+    private void showAnimalPopulationChart() {
+        animalPopulationChartBox.setManaged(true);
+        animalPopulationChartBox.setVisible(true);
+        grassPopulationChartBox.setManaged(false);
+        grassPopulationChartBox.setVisible(false);
+    }
+
+    @FXML
+    private void showGrassPopulationChart() {
+        animalPopulationChartBox.setManaged(false);
+        animalPopulationChartBox.setVisible(false);
+        grassPopulationChartBox.setManaged(true);
+        grassPopulationChartBox.setVisible(true);
+    }
 
     public void initializeWithSettings(SimulationSettings settings) {
         this.settings = settings;
