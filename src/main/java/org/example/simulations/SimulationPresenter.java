@@ -108,6 +108,8 @@ public class SimulationPresenter implements MapChangeListener {
         drawMap();
     }
 
+
+
     public void start() {
         napis.setText("Hello World!");
         System.out.println("hello world");

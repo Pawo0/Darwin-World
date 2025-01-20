@@ -4,7 +4,9 @@ package org.example.model;
 import org.example.simulations.SimulationSettings;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Animal implements WorldElement {
 
@@ -70,9 +72,18 @@ public class Animal implements WorldElement {
     }
 
     public void addDescendant() {
-        descendantsCounter++;
-        this.parents.forEach(Animal::addDescendant);
+        addDescendant(new HashSet<>());
     }
+
+    private void addDescendant(Set<Animal> visited) {
+        // Jeśli zwierzę zostało już odwiedzone, nie rób nic
+        if (visited.contains(this)) return;
+        visited.add(this); // Oznacz zwierzę jako odwiedzone
+
+        descendantsCounter++;
+        this.parents.forEach(parent -> parent.addDescendant(visited));
+    }
+
 
     public int getDescendantsCounter() {
         return descendantsCounter;

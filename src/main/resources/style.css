@@ -1,0 +1,24 @@
+.stats-section {
+    -fx-padding: 10;
+    -fx-alignment: center;
+}
+
+.grid-style GridPane Label {
+    -fx-padding: 3;
+}
+
+.header {
+    -fx-font-weight: 700;
+    -fx-font-size: 16;
+}
+
+.grid-style  {
+    -fx-border-color: black;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-padding: 5;
+}
+.main{
+    -fx-padding: 10;
+    -fx-alignment: center;
+}
