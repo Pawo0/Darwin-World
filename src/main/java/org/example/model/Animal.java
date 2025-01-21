@@ -2,6 +2,7 @@ package org.example.model;
 
 
 import org.example.genomes.Genome;
+import org.example.interfaces.WorldElement;
 import org.example.simulations.SimulationSettings;
 
 import java.util.ArrayList;
@@ -15,14 +16,14 @@ public class Animal implements WorldElement {
     private int energy;
     private int childrenCounter;
     private int age;
-    private List<Animal> children;
+    private final List<Animal> children;
     private int deathDate;
     private MapDirection mapDirection;
-    private Genome genotype;
+    private final Genome genotype;
     private int geneIndex;
     private int grassEaten;
-    private SimulationSettings settings;
-    private int birthDate;
+    private final SimulationSettings settings;
+    private final int birthDate;
 
     private int descendantsCounter;
     private List<Animal> parents;
@@ -108,7 +109,7 @@ public class Animal implements WorldElement {
     }
 
     @Override
-    public Vector2d getPosition() {
+    public Vector2d position() {
         return position;
     }
 

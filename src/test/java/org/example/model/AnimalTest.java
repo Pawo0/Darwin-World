@@ -16,7 +16,7 @@ class AnimalTest {
         Vector2d initialPosition = new Vector2d(0, 0);
         Animal animal = new Animal(genome, initialPosition, settings,0);
 
-        assertEquals(initialPosition, animal.getPosition());
+        assertEquals(initialPosition, animal.position());
         assertEquals(100, animal.getEnergy());
         assertEquals(0, animal.getChildrenCounter());
         assertEquals(0, animal.getAge());
@@ -33,7 +33,7 @@ class AnimalTest {
         Animal animal = new Animal(genome, initialPosition, settings, 0);
 
         animal.move();
-        assertNotEquals(initialPosition, animal.getPosition());
+        assertNotEquals(initialPosition, animal.position());
         assertEquals(99, animal.getEnergy());
         assertEquals(1, animal.getGeneIndex());
     }

@@ -16,6 +16,7 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import org.example.genomes.Genome;
+import org.example.interfaces.MapChangeListener;
 import org.example.model.*;
 
 import java.math.BigDecimal;
@@ -66,7 +67,7 @@ public class SimulationPresenter implements MapChangeListener {
     @FXML
     private LineChart<Number, Number> grassPopulationChart;
     @FXML
-    private GridPane animalStats;
+    private GridPane animalStatsGrid;
     @FXML
     private GridPane mapGrid;
     @FXML
@@ -97,7 +98,7 @@ public class SimulationPresenter implements MapChangeListener {
 
     public void initialize(SimulationSettings settings) {
         this.settings = settings;
-        animalImage = new Image(getClass().getResourceAsStream("/images/animal.png"));
+        animalImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/animal.png")));
 
         if (settings.isLifeGivingCorpses()) {
             map = new WorldMapDeadAnimals(settings);
@@ -173,7 +174,7 @@ public class SimulationPresenter implements MapChangeListener {
                     rectangle.setStyle("-fx-fill: rgba(255, 0, 0, 0.2);");
                     rectangle.setMouseTransparent(true);
                     GridPane.setHalignment(rectangle, HPos.CENTER);
-                    mapGrid.add(rectangle, animal.getPosition().getX(), animal.getPosition().getY(), 1, 1);
+                    mapGrid.add(rectangle, animal.position().getX(), animal.position().getY(), 1, 1);
                 }
             }
         }
@@ -189,7 +190,7 @@ public class SimulationPresenter implements MapChangeListener {
 
     private GridPane createAnimalView(Animal animal, double cellSize) {
         if (animal == followedAnimal){
-            Vector2d position = animal.getPosition();
+            Vector2d position = animal.position();
             ImageView krecikView = new ImageView(krecikImage);
             krecikView.setFitWidth(cellSize);
             krecikView.setFitHeight(cellSize);
@@ -253,7 +254,7 @@ public class SimulationPresenter implements MapChangeListener {
 
 
     private void drawFocusedAnimal(Animal animal){
-        Vector2d position = animal.getPosition();
+        Vector2d position = animal.position();
         if (map.isAnimalAt(position)){
             System.out.println("Animal at " + position + " clicked: " + animal);
             ImageView krecikView = new ImageView(krecikImage);
@@ -272,7 +273,7 @@ public class SimulationPresenter implements MapChangeListener {
 
             setAnimalStats(animal);
             drawAnimalStats(animal);
-            animalStats.visibleProperty().setValue(true);
+            animalStatsGrid.visibleProperty().setValue(true);
         }
         else if (followedAnimal.equals(animal)){
             followedAnimal = null;
@@ -389,11 +390,11 @@ public class SimulationPresenter implements MapChangeListener {
 
         if (followedAnimal != null) {
             drawAnimalStats(followedAnimal);
-            animalStats.visibleProperty().setValue(true);
+            animalStatsGrid.visibleProperty().setValue(true);
 //            mapChanged(map, "animal stats");
         }
         else {
-            animalStats.visibleProperty().setValue(false);
+            animalStatsGrid.visibleProperty().setValue(false);
         }
 
         if (isPaused){

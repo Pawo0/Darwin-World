@@ -43,7 +43,7 @@ class WorldMapTest {
         worldMap.nextDay();
 
 
-        assertNotEquals(new Vector2d(1, 1), animal.getPosition());
+        assertNotEquals(new Vector2d(1, 1), animal.position());
     }
 
     @Test

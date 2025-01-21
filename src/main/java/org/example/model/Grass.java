@@ -1,19 +1,8 @@
 package org.example.model;
 
-import java.util.Vector;
+import org.example.interfaces.WorldElement;
 
-public class Grass implements WorldElement{
-
-    private Vector2d position;
-
-    public Grass(Vector2d position) {
-        this.position = position;
-    }
-
-    @Override
-    public Vector2d getPosition() {
-        return position;
-    }
+public record Grass(Vector2d position) implements WorldElement {
 
     @Override
     public String toString() {

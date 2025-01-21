@@ -3,11 +3,14 @@ package org.example.model;
 import org.example.consoleview.MapVisualizer;
 import org.example.genomes.Genome;
 import org.example.genomes.GenomeSwap;
+import org.example.interfaces.MapChangeListener;
+import org.example.interfaces.MapObserver;
+import org.example.interfaces.WorldMapInterface;
 import org.example.simulations.SimulationSettings;
 
 import java.util.*;
 
-public class WorldMap implements WorldMapInterface {
+public class WorldMap implements WorldMapInterface, MapObserver {
     protected final UUID id;
     protected final Map<Vector2d, PriorityQueue<Animal>> liveAnimals;
     protected final Map<Vector2d, PriorityQueue<Animal>> deadAnimals;
@@ -46,9 +49,9 @@ public class WorldMap implements WorldMapInterface {
 
         initGrassGrowingChance();
         grassGrows(settings.getStartAmountOfGrass());
-//        System.out.println("WorldMap created");
     }
 
+    @Override
     public void nextDay() {
         currentDay++;
         allAnimalsAgeUp();
@@ -58,6 +61,7 @@ public class WorldMap implements WorldMapInterface {
         animalCopulate();
         dailyGrassGrow();
         notifyObservers(String.valueOf(liveAnimalsAmount()));
+          
     }
 
     // grass init
@@ -94,6 +98,7 @@ public class WorldMap implements WorldMapInterface {
         grassGrows(dailyAmountGrowingGrass);
     }
 
+    @Override
     public void grassGrows(int grassAmount) {
         generateGrassFromGivenFields(this.fieldsWithGrassGrowPriority, grassAmount);
     }
@@ -124,8 +129,8 @@ public class WorldMap implements WorldMapInterface {
     }
 
 //    animal
-
-    protected void allAnimalsAgeUp() {
+    @Override
+    public void allAnimalsAgeUp() {
         for (PriorityQueue<Animal> animals : liveAnimals.values()) {
             for (Animal animal : animals) {
                 animal.incrementAge();
@@ -134,7 +139,7 @@ public class WorldMap implements WorldMapInterface {
     }
 
     protected void removeAnimal(Animal animal, Map<Vector2d, PriorityQueue<Animal>> animals) {
-        Vector2d position = animal.getPosition();
+        Vector2d position = animal.position();
         animals.get(position).remove(animal);
         if (animals.get(position).isEmpty()) {
             animals.remove(position);
@@ -143,10 +148,10 @@ public class WorldMap implements WorldMapInterface {
 
     @Override
     public boolean place(Animal animal) {
-        if (!boundary.contains(animal.getPosition())) {
+        if (!boundary.contains(animal.position())) {
             return false;
         }
-        Vector2d position = animal.getPosition();
+        Vector2d position = animal.position();
         liveAnimals.putIfAbsent(position, new PriorityQueue<>(animalComparator));
         liveAnimals.get(position).add(animal);
         return true;
@@ -173,7 +178,7 @@ public class WorldMap implements WorldMapInterface {
     }
 
     protected void animalEat(Animal animal) {
-        Vector2d position = animal.getPosition();
+        Vector2d position = animal.position();
         if (isGrassAt(position)) {
             animal.eat();
             grasses.remove(position);
@@ -197,14 +202,14 @@ public class WorldMap implements WorldMapInterface {
 
     protected void moveAnimalsToDeadList(List<Animal> animalsToRemove) {
         for (Animal animal : animalsToRemove) {
-            Vector2d position = animal.getPosition();
+            Vector2d position = animal.position();
             removeAnimal(animal, liveAnimals);
             deadAnimals.putIfAbsent(position, new PriorityQueue<>(animalComparator));
             deadAnimals.get(position).add(animal);
         }
     }
 
-//    animal copulation
+    //    animal copulation
     @Override
     public void animalCopulate() {
         Animal partner;
@@ -222,10 +227,11 @@ public class WorldMap implements WorldMapInterface {
         }
     }
 
-    public Animal copulate(Animal animal1, Animal animal2) {
-        Vector2d position = animal1.getPosition();
+  
+    private Animal copulate(Animal animal1, Animal animal2) {
+        Vector2d position = animal1.position();
         Genome genome = switch (settings.isSpecialMutation()) {
-            case SWAP -> new GenomeSwap(settings);
+            case SWAP -> new GenomeSwap(animal1, animal2, settings);
             case DEFAULT -> new Genome(settings);
         };
         Animal child = new Animal(genome, position, this.settings, this.currentDay);
@@ -244,18 +250,20 @@ public class WorldMap implements WorldMapInterface {
         return null;
     }
 
-//    observers
-public void addObserver(MapChangeListener observer) {
-    observers.add(observer);
-}
+    //    observers
+    @Override
+    public void addObserver(MapChangeListener observer) {
+        observers.add(observer);
+    }
 
+    @Override
     public void notifyObservers(String message) {
         for (MapChangeListener observer : observers) {
             observer.mapChanged(this, message);
         }
     }
 
-// getters
+    // getters
     @Override
     public boolean isAnimalAt(Vector2d position) {
         return liveAnimals.containsKey(position);
@@ -267,13 +275,13 @@ public void addObserver(MapChangeListener observer) {
     }
 
     @Override
-    public PriorityQueue<Animal> getAnimalsAt(Vector2d position) {
-        return liveAnimals.get(position);
+    public boolean isGrassAt(Vector2d position) {
+        return grasses.containsKey(position);
     }
 
     @Override
-    public boolean isGrassAt(Vector2d position) {
-        return grasses.containsKey(position);
+    public PriorityQueue<Animal> getAnimalsAt(Vector2d position) {
+        return liveAnimals.get(position);
     }
 
     public Grass getGrassAt(Vector2d position) {

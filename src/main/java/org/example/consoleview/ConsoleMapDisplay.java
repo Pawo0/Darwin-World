@@ -1,6 +1,6 @@
 package org.example.consoleview;
 
-import org.example.model.MapChangeListener;
+import org.example.interfaces.MapChangeListener;
 import org.example.model.WorldMap;
 
 public class ConsoleMapDisplay implements MapChangeListener {
