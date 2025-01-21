@@ -1,12 +1,15 @@
 package org.example.model;
 
+import org.example.genomes.Genome;
+import org.example.genomes.MutationType;
+import org.example.map.objects.Animal;
 import org.example.simulations.SimulationSettings;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class AnimalTest {
-    SimulationSettings settings = new SimulationSettings(10, 10, 0, 20, 1, false, 1, 100, 10, 1,0,0,MutationType.DEFAULT, 5, 400, false);
+    SimulationSettings settings = new SimulationSettings(10, 10, 0, 20, 1, false, 1, 100, 10, 1,0,0, MutationType.DEFAULT, 5, 400, false);
 
     @Test
     void testAnimalInitialization() {
@@ -14,7 +17,7 @@ class AnimalTest {
         Vector2d initialPosition = new Vector2d(0, 0);
         Animal animal = new Animal(genome, initialPosition, settings,0);
 
-        assertEquals(initialPosition, animal.getPosition());
+        assertEquals(initialPosition, animal.position());
         assertEquals(100, animal.getEnergy());
         assertEquals(0, animal.getChildrenCounter());
         assertEquals(0, animal.getAge());
@@ -27,11 +30,11 @@ class AnimalTest {
     @Test
     void testMove() {
         Genome genome = new Genome(settings);
-        Vector2d initialPosition = new Vector2d(0, 0);
+        Vector2d initialPosition = new Vector2d(5, 5);
         Animal animal = new Animal(genome, initialPosition, settings, 0);
 
         animal.move();
-        assertNotEquals(initialPosition, animal.getPosition());
+        assertNotEquals(initialPosition, animal.position());
         assertEquals(99, animal.getEnergy());
         assertEquals(1, animal.getGeneIndex());
     }

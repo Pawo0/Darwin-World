@@ -20,7 +20,7 @@ public class SimulationEngine {
         }
     }
 
-//    to bedzie lepsze do wukorzystania po kliknieciu guzika START w GUI (o ile dziala)
+
     public void start(){
         for (Simulation simulation : simulations) {
             if (simulation.isRunning()){

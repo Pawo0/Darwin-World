@@ -6,7 +6,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.example.model.MutationType;
+import org.example.genomes.MutationType;
 import org.example.simulations.SimulationApp;
 import org.example.simulations.SimulationSettings;
 

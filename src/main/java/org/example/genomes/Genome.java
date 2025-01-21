@@ -1,5 +1,6 @@
-package org.example.model;
+package org.example.genomes;
 
+import org.example.map.objects.Animal;
 import org.example.simulations.SimulationSettings;
 
 import java.util.ArrayList;

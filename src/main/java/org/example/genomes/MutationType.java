@@ -1,4 +1,4 @@
-package org.example.model;
+package org.example.genomes;
 
 public enum MutationType {
     DEFAULT,

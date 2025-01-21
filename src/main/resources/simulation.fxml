@@ -7,7 +7,6 @@
 <?import javafx.scene.layout.GridPane?>
 
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
@@ -33,7 +32,7 @@
                         </yAxis>
                     </LineChart>
                 </VBox>
-                <VBox styleClass="grid-style" fx:id="grassPopulationChartBox" managed="false">
+                <VBox styleClass="grid-style" fx:id="grassPopulationChartBox" managed="false" visible="false">
                     <Label text="Grass over time" />
                     <LineChart fx:id="grassPopulationChart" title="Grass" createSymbols="false" styleClass="chart-style">
                         <xAxis>
@@ -87,7 +86,7 @@
                 <!-- Statystyki zwierząt -->
                 <VBox styleClass="grid-style">
                     <Label text="Animal statistics" styleClass="header"/>
-                    <GridPane fx:id="animalStats" gridLinesVisible="true">
+                    <GridPane fx:id="animalStatsGrid" gridLinesVisible="true">
                         <columnConstraints>
                             <ColumnConstraints maxWidth="150" minWidth="150" prefWidth="150"/>
                             <ColumnConstraints maxWidth="100" minWidth="100" prefWidth="100"/>
