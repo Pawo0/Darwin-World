@@ -5,21 +5,20 @@ import org.example.simulations.SimulationSettings;
 import java.util.*;
 
 public class WorldMapDeadAnimals extends WorldMap {
-    private final List<Vector2d> tmpFieldsWithPriority = new ArrayList<>();
+    private final Map<Vector2d, PriorityQueue<Animal>> recentDeadAnimals;
+    private final List<Vector2d> tmpFieldsWithPriority;
     private final int width;
     private final int height;
-    private final  Map<Vector2d, PriorityQueue<Animal>> recentDeadAnimals;
 
-    public List<Vector2d> getTmpFieldsWithPriority() {
-        return tmpFieldsWithPriority;
-    }
 
     public WorldMapDeadAnimals(SimulationSettings settings) {
         super(settings);
         this.width = settings.getMapWidth();
         this.height = settings.getMapHeight();
+        this.tmpFieldsWithPriority = new ArrayList<>();
         this.recentDeadAnimals = new HashMap<>();
     }
+
     @Override
     public List<Vector2d> getFieldsWithGrassGrowPriority() {
         List<Vector2d> allFieldsWithPriority = new ArrayList<>();
@@ -35,7 +34,6 @@ public class WorldMapDeadAnimals extends WorldMap {
     }
 
     public void clearDeadBodies() {
-//        todo jak sie bedzie chcialo dodac do ustawien
 //    usuwanie starszych cial niz 10 dni, czyszczenie tmpFieldsWithPriority i dodanie ich na nowo (z obkrojonej listy)
         List<Animal> animalsToRemove = new ArrayList<>();
         for (PriorityQueue<Animal> animals : this.recentDeadAnimals.values()) {
@@ -56,17 +54,9 @@ public class WorldMapDeadAnimals extends WorldMap {
             addGrassPriorityAroundDeadBody(position);
         }
     }
+
     @Override
-    public void checkForDeadAnimals() {
-        List<Animal> animalsToRemove = new ArrayList<>();
-        for (PriorityQueue<Animal> animals : liveAnimals.values()) {
-            for (Animal animal : animals) {
-                if (animal.getEnergy() < 0) {
-                    animal.animalDeath();
-                    animalsToRemove.add(animal);
-                }
-            }
-        }
+    protected void moveAnimalsToDeadList(List<Animal> animalsToRemove) {
         for (Animal animal : animalsToRemove) {
             Vector2d position = animal.getPosition();
             removeAnimal(animal, liveAnimals);
@@ -77,13 +67,12 @@ public class WorldMapDeadAnimals extends WorldMap {
         }
     }
 
-
-    private void addGrassPriorityAroundDeadBody(Vector2d position){
+    private void addGrassPriorityAroundDeadBody(Vector2d position) {
         int x = position.getX();
         int y = position.getY();
         for (int i = x - 1; i <= x + 1; i++) {
             for (int j = y - 1; j <= y + 1; j++) {
-                if (i >= 0 && i < this.width && j >= 0 && j < this.height && !this.isGrassAt(new Vector2d(i, j)) && !this.tmpFieldsWithPriority.contains(new Vector2d(i, j))){
+                if (i >= 0 && i < this.width && j >= 0 && j < this.height && !this.isGrassAt(new Vector2d(i, j)) && !this.tmpFieldsWithPriority.contains(new Vector2d(i, j))) {
                     tmpFieldsWithPriority.add(new Vector2d(i, j));
                 }
             }
@@ -91,7 +80,7 @@ public class WorldMapDeadAnimals extends WorldMap {
 
     }
 
-//    mylące, bo w og mapie sprawdzamy czy kiedykolwiek cos tu zdechlo
+    //    mylące, bo w og mapie sprawdzamy czy kiedykolwiek cos tu zdechlo
     @Override
     public boolean isDeadAnimalAt(Vector2d position) {
         return recentDeadAnimals.containsKey(position);
@@ -127,8 +116,12 @@ public class WorldMapDeadAnimals extends WorldMap {
     }
 
     @Override
-    protected void removeGrassFromFields(Vector2d position){
+    protected void removeGrass(Vector2d position) {
         if (tmpFieldsWithPriority != null) tmpFieldsWithPriority.remove(position);
-        super.removeGrassFromFields(position);
+        super.removeGrass(position);
+    }
+
+    public List<Vector2d> getTmpFieldsWithPriority() {
+        return tmpFieldsWithPriority;
     }
 }

@@ -1,6 +1,5 @@
 package org.example.model;
 
-import com.sun.javafx.sg.prism.web.NGWebView;
 import org.example.simulations.SimulationSettings;
 import org.junit.jupiter.api.Test;
 
@@ -62,13 +61,13 @@ class WorldMapDeadAnimalsTest {
     }
 
     @Test
-    void removeGrassFromFields_removesGrassFromPriorityFields() {
+    void removeGrassFromFields_removesGrass() {
         WorldMapDeadAnimals map = new WorldMapDeadAnimals(settings);
         Vector2d position = new Vector2d(1, 1);
         map.getTmpFieldsWithPriority().add(position);
         map.grassGrows(100);
 
-        map.removeGrassFromFields(position);
+        map.removeGrass(position);
 
         assertFalse(map.getTmpFieldsWithPriority().contains(position));
         assertTrue(map.isGrassAt(position));

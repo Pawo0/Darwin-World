@@ -27,7 +27,7 @@ class AnimalTest {
     @Test
     void testMove() {
         Genome genome = new Genome(settings);
-        Vector2d initialPosition = new Vector2d(0, 0);
+        Vector2d initialPosition = new Vector2d(5, 5);
         Animal animal = new Animal(genome, initialPosition, settings, 0);
 
         animal.move();

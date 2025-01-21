@@ -55,3 +55,6 @@
     -fx-border-radius: 5;
     -fx-padding: 10;
 }
+.chart-series-line {
+    -fx-stroke: green; 
+}
