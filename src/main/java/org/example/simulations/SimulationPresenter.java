@@ -362,8 +362,16 @@ public class SimulationPresenter implements MapChangeListener {
                         mapGrid.add(grassView, i, j, 1, 1);
                         continue;
                     }
-                    case DEAD_ANIMAL -> object = this.map.getDeadAnimals().get(currentPosition).peek();
-                    case EMPTY -> label = new Label(" ");
+                    case DEAD_ANIMAL -> {
+                        if (settings.isLifeGivingCorpses()) {
+                            object = this.map.getDeadAnimals().get(currentPosition).peek();
+                        }else {
+                            label = new Label(" ");
+                        }
+                    }
+                    case EMPTY -> {
+                        label = new Label(" ");
+                    }
                 }
 
                 if (object != null) label = new Label(object.toString());

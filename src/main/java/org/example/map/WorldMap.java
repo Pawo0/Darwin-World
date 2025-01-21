@@ -236,7 +236,7 @@ public class WorldMap implements WorldMapInterface, MapObserver {
         Vector2d position = animal1.position();
         Genome genome = switch (settings.isSpecialMutation()) {
             case SWAP -> new GenomeSwap(animal1, animal2, settings);
-            case DEFAULT -> new Genome(settings);
+            case DEFAULT -> new Genome(animal1, animal2, settings);
         };
         Animal child = new Animal(genome, position, this.settings, this.currentDay);
         child.setParents(List.of(animal1, animal2));
