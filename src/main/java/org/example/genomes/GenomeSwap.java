@@ -21,15 +21,15 @@ public class GenomeSwap extends Genome {
         for (int i = 0; i < numberOfMutations; i++){
             boolean isSwap = random.nextBoolean();
             if (isSwap){
-                int geneIndex1 = random.nextInt(this.getLength());
-                int geneIndex2 = random.nextInt(this.getLength());
+                int geneIndex1 = random.nextInt(this.getGenome().size());
+                int geneIndex2 = random.nextInt(this.getGenome().size());
                 int geneValue1 = this.getGenome().get(geneIndex1);
                 int geneValue2 = this.getGenome().get(geneIndex2);
                 this.getGenome().set(geneIndex1, geneValue2);
                 this.getGenome().set(geneIndex2, geneValue1);
             }
             else {
-                int geneIndex = random.nextInt(this.getLength());
+                int geneIndex = random.nextInt(this.getGenome().size());
                 int geneValue = random.nextInt(8);
                 this.getGenome().set(geneIndex, geneValue);
             }
