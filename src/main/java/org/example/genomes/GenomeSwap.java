@@ -1,10 +1,11 @@
-package org.example.model;
+package org.example.genomes;
 
+import org.example.model.Animal;
 import org.example.simulations.SimulationSettings;
 
 import java.util.Random;
 
-public class GenomeSwap extends Genome{
+public class GenomeSwap extends Genome {
     public GenomeSwap(SimulationSettings settings) {
         super(settings);
     }

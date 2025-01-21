@@ -23,7 +23,7 @@ public class SimulationApp extends Application {
         SimulationPresenter presenter = loader.getController();
 
         if (settings != null) {
-            presenter.initializeWithSettings(settings);
+            presenter.initialize(settings);
         }
 
         configureStage(primaryStage, viewRoot);

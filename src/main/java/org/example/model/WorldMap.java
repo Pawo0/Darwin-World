@@ -1,6 +1,8 @@
 package org.example.model;
 
-import org.example.MapVisualizer;
+import org.example.consoleview.MapVisualizer;
+import org.example.genomes.Genome;
+import org.example.genomes.GenomeSwap;
 import org.example.simulations.SimulationSettings;
 
 import java.util.*;
@@ -265,7 +267,7 @@ public void addObserver(MapChangeListener observer) {
     }
 
     @Override
-    public PriorityQueue<Animal> animalsAt(Vector2d position) {
+    public PriorityQueue<Animal> getAnimalsAt(Vector2d position) {
         return liveAnimals.get(position);
     }
 

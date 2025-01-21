@@ -1,5 +1,7 @@
 package org.example.model;
 
+import org.example.genomes.Genome;
+import org.example.genomes.MutationType;
 import org.example.simulations.SimulationSettings;
 import org.junit.jupiter.api.Test;
 
@@ -7,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class WorldMapTest {
 
-    SimulationSettings settings = new SimulationSettings(10, 10, 0, 20, 1, false, 1, 100, 10, 1,0,0,MutationType.DEFAULT, 5, 400, false);
+    SimulationSettings settings = new SimulationSettings(10, 10, 0, 20, 1, false, 1, 100, 10, 1,0,0, MutationType.DEFAULT, 5, 400, false);
     Genome genome = new Genome(settings);
 
     @Test
@@ -25,7 +27,7 @@ class WorldMapTest {
         Animal animal2 = new Animal(genome, new Vector2d(1, 1), settings, 0);
         worldMap.place(animal1);
         assertTrue(worldMap.place(animal2));
-        assertEquals(2, worldMap.animalsAt(new Vector2d(1, 1)).size());
+        assertEquals(2, worldMap.getAnimalsAt(new Vector2d(1, 1)).size());
     }
 
     @Test
@@ -75,7 +77,7 @@ class WorldMapTest {
         worldMap.place(animal1);
         worldMap.place(animal2);
         worldMap.animalCopulate();
-        assertEquals(3, worldMap.animalsAt(new Vector2d(1, 1)).size());
+        assertEquals(3, worldMap.getAnimalsAt(new Vector2d(1, 1)).size());
     }
 
     @Test

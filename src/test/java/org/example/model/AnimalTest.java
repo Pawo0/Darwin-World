@@ -1,12 +1,14 @@
 package org.example.model;
 
+import org.example.genomes.Genome;
+import org.example.genomes.MutationType;
 import org.example.simulations.SimulationSettings;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class AnimalTest {
-    SimulationSettings settings = new SimulationSettings(10, 10, 0, 20, 1, false, 1, 100, 10, 1,0,0,MutationType.DEFAULT, 5, 400, false);
+    SimulationSettings settings = new SimulationSettings(10, 10, 0, 20, 1, false, 1, 100, 10, 1,0,0, MutationType.DEFAULT, 5, 400, false);
 
     @Test
     void testAnimalInitialization() {

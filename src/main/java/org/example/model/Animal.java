@@ -1,6 +1,7 @@
 package org.example.model;
 
 
+import org.example.genomes.Genome;
 import org.example.simulations.SimulationSettings;
 
 import java.util.ArrayList;

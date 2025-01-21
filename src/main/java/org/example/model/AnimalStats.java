@@ -1,5 +1,7 @@
 package org.example.model;
 
+import org.example.genomes.Genome;
+
 public class AnimalStats {
     private final Genome genome;
     private final int currentGenome;

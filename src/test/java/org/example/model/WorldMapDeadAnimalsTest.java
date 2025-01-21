@@ -1,5 +1,7 @@
 package org.example.model;
 
+import org.example.genomes.Genome;
+import org.example.genomes.MutationType;
 import org.example.simulations.SimulationSettings;
 import org.junit.jupiter.api.Test;
 

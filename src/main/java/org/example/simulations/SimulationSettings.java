@@ -1,7 +1,7 @@
 package org.example.simulations;
 
 import org.example.model.Boundary;
-import org.example.model.MutationType;
+import org.example.genomes.MutationType;
 import org.example.model.Vector2d;
 
 public class SimulationSettings {

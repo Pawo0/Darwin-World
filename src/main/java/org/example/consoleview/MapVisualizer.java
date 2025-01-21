@@ -1,4 +1,4 @@
-package org.example;
+package org.example.consoleview;
 
 import org.example.model.Vector2d;
 import org.example.model.WorldMap;
@@ -76,7 +76,7 @@ public class MapVisualizer {
     private String drawObject(Vector2d currentPosition) {
         Object object = null;
         if (this.map.isAnimalAt(currentPosition)) {
-            object = this.map.animalsAt(currentPosition).peek();
+            object = this.map.getAnimalsAt(currentPosition).peek();
         } else if (this.map.isGrassAt(currentPosition)) {
             object = this.map.getGrassAt(currentPosition);
         } else if (this.map.isDeadAnimalAt(currentPosition)) {

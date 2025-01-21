@@ -22,7 +22,7 @@ public interface WorldMapInterface {
 
     void checkForDeadAnimals();
 
-    PriorityQueue<Animal> animalsAt(Vector2d position);
+    PriorityQueue<Animal> getAnimalsAt(Vector2d position);
 
     UUID getId();
 }

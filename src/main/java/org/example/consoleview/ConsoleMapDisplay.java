@@ -1,4 +1,7 @@
-package org.example.model;
+package org.example.consoleview;
+
+import org.example.model.MapChangeListener;
+import org.example.model.WorldMap;
 
 public class ConsoleMapDisplay implements MapChangeListener {
     private int updateCount = 0;

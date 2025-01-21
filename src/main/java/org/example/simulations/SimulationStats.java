@@ -1,7 +1,7 @@
 package org.example.simulations;
 
 import org.example.model.Animal;
-import org.example.model.Genome;
+import org.example.genomes.Genome;
 import org.example.model.Vector2d;
 import org.example.model.WorldMap;
 
