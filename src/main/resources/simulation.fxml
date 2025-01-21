@@ -32,7 +32,7 @@
                         </yAxis>
                     </LineChart>
                 </VBox>
-                <VBox styleClass="grid-style" fx:id="grassPopulationChartBox" managed="false">
+                <VBox styleClass="grid-style" fx:id="grassPopulationChartBox" managed="false" visible="false">
                     <Label text="Grass over time" />
                     <LineChart fx:id="grassPopulationChart" title="Grass" createSymbols="false" styleClass="chart-style">
                         <xAxis>

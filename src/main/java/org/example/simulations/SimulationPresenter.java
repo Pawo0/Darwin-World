@@ -158,8 +158,8 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
 
-    private void drawInfoGrid(){
-        List<Vector2d> fieldsWithPriority =  map.getFieldsWithGrassGrowPriority();
+    private void drawInfoGrid() {
+        List<Vector2d> fieldsWithPriority = map.getFieldsWithGrassGrowPriority();
 
         for (Vector2d position : fieldsWithPriority) {
             Rectangle rectangle = new Rectangle(cellSize, cellSize);
@@ -169,7 +169,7 @@ public class SimulationPresenter implements MapChangeListener {
             mapGrid.add(rectangle, position.getX(), position.getY(), 1, 1);
         }
 
-        Genome dominantGenome =  stats.getDominantGenome();
+        Genome dominantGenome = stats.getDominantGenome();
 
         for (PriorityQueue<Animal> animals : map.getLiveAnimals().values()) {
             for (Animal animal : animals) {
@@ -193,7 +193,7 @@ public class SimulationPresenter implements MapChangeListener {
 
 
     private GridPane createAnimalView(Animal animal, double cellSize) {
-        if (animal == followedAnimal){
+        if (animal == followedAnimal) {
             Vector2d position = animal.position();
             ImageView krecikView = new ImageView(krecikImage);
             krecikView.setFitWidth(cellSize);
@@ -245,7 +245,7 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
 
-    private void drawAnimalStats(Animal animal){
+    private void drawAnimalStats(Animal animal) {
         animalGenome.setText(animal.getGenotype().toString());
         animalActiveGenome.setText(String.valueOf(animal.getGenotype().getGen(animal.getGeneIndex())));
         animalEnergy.setText(String.valueOf(animal.getEnergy()));
@@ -257,9 +257,9 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
 
-    private void drawFocusedAnimal(Animal animal){
+    private void drawFocusedAnimal(Animal animal) {
         Vector2d position = animal.position();
-        if (map.isAnimalAt(position)){
+        if (map.isAnimalAt(position)) {
             System.out.println("Animal at " + position + " clicked: " + animal);
             ImageView krecikView = new ImageView(krecikImage);
             krecikView.setFitWidth(cellSize);
@@ -270,31 +270,26 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
 
-    private void handleAnimalClick(Animal animal){
-        if (followedAnimal == null){
+    private void handleAnimalClick(Animal animal) {
+        if (followedAnimal == null) {
             followedAnimal = animal;
             drawFocusedAnimal(animal);
 
-            setAnimalStats(animal);
             drawAnimalStats(animal);
             animalStatsGrid.visibleProperty().setValue(true);
-        }
-        else if (followedAnimal.equals(animal)){
+        } else if (followedAnimal.equals(animal)) {
             followedAnimal = null;
-            mapChanged(map, "clicked");
-        }
-        else{
+        } else {
             followedAnimal = animal;
-            mapChanged(map, "clicked");
         }
+        mapChanged(map, "clicked");
     }
 
 
-    private void setStats(){
+    private void setStats() {
         if (settings.isSaveToCSV()) {
-            this.stats = new SimulationStats(map, "stats/" +map.getId() + "-stats.csv");
-        }
-        else{
+            this.stats = new SimulationStats(map, "stats/" + map.getId() + "-stats.csv");
+        } else {
             this.stats = new SimulationStats(map);
         }
 
@@ -304,24 +299,13 @@ public class SimulationPresenter implements MapChangeListener {
         grassAmount.setText(String.valueOf(stats.getGrassAmount()));
         dominantGenome.setText(String.valueOf(stats.getDominantGenome()));
         dominantGenomeAmount.setText(String.valueOf(stats.getDominantGenomeAmount()));
-        averageEnergy.setText(String.valueOf(round(stats.getAverageEnergy(),2)));
-        averageLifeSpan.setText(String.valueOf(round(stats.getAverageLifeSpan(),2)));
-        averageDescendantAmount.setText(String.valueOf(round(stats.getAverageDescendantAmount(),2)));
+        averageEnergy.setText(String.valueOf(round(stats.getAverageEnergy(), 2)));
+        averageLifeSpan.setText(String.valueOf(round(stats.getAverageLifeSpan(), 2)));
+        averageDescendantAmount.setText(String.valueOf(round(stats.getAverageDescendantAmount(), 2)));
     }
 
 
-    private void setAnimalStats(Animal animal){
-        AnimalStats animalStats = new AnimalStats(animal);
-        System.out.println(animalStats);
-    }
-
-
-    private void clearAnimalStats(){
-        System.out.println("clear");
-    }
-
-
-    private void setCharts(){
+    private void setCharts() {
         int currentDay = stats.getDay();
         int liveAnimals = stats.getLiveAnimalsAmount();
         int grass = stats.getGrassAmount();
@@ -342,11 +326,11 @@ public class SimulationPresenter implements MapChangeListener {
     public void drawMap() {
         clearGrid();
 
-        for (int i = 0; i <= width-1; i++) {
+        for (int i = 0; i <= width - 1; i++) {
             mapGrid.getColumnConstraints().add(new ColumnConstraints(cellSize));
         }
 
-        for (int j = 0; j <= height-1; j++) {
+        for (int j = 0; j <= height - 1; j++) {
             mapGrid.getRowConstraints().add(new RowConstraints(cellSize));
         }
 
@@ -354,7 +338,7 @@ public class SimulationPresenter implements MapChangeListener {
             for (int j = 0; j <= height - 1; j++) {
                 Vector2d currentPosition = new Vector2d(i, j);
                 Label label = null;
-                Object object = null;
+                Animal object = null;
 
                 MapObjectType type = map.getMapObjectType(currentPosition);
 
@@ -362,13 +346,11 @@ public class SimulationPresenter implements MapChangeListener {
                     case ANIMAL -> {
                         object = this.map.getAnimalsAt(currentPosition).peek();
                         if (object != null) {
-                            Animal animal = (Animal) object;
+                            Animal animal = object;
                             GridPane animalView = createAnimalView(animal, cellSize);
                             GridPane.setHalignment(animalView, HPos.CENTER);
                             mapGrid.add(animalView, i, j, 1, 1);
-                            animalView.setOnMouseClicked(event -> {
-                                handleAnimalClick(animal);
-                            });
+                            animalView.setOnMouseClicked(event -> handleAnimalClick(animal));
                             continue;
                         }
                     }
@@ -380,17 +362,11 @@ public class SimulationPresenter implements MapChangeListener {
                         mapGrid.add(grassView, i, j, 1, 1);
                         continue;
                     }
-                    case DEAD_ANIMAL -> {
-                        object = this.map.getDeadAnimals().get(currentPosition).peek();
-                    }
-                    case EMPTY -> {
-                        label = new Label(" ");
-                    }
+                    case DEAD_ANIMAL -> object = this.map.getDeadAnimals().get(currentPosition).peek();
+                    case EMPTY -> label = new Label(" ");
                 }
 
-                if (object != null) {
-                    label = new Label(object.toString());
-                }
+                if (object != null) label = new Label(object.toString());
 
                 GridPane.setHalignment(label, HPos.CENTER);
                 mapGrid.add(label, i, j, 1, 1);
@@ -401,12 +377,11 @@ public class SimulationPresenter implements MapChangeListener {
             drawAnimalStats(followedAnimal);
             animalStatsGrid.visibleProperty().setValue(true);
 //            mapChanged(map, "animal stats");
-        }
-        else {
+        } else {
             animalStatsGrid.visibleProperty().setValue(false);
         }
 
-        if (isPaused){
+        if (isPaused) {
             drawInfoGrid();
         }
     }
@@ -435,7 +410,7 @@ public class SimulationPresenter implements MapChangeListener {
         Platform.runLater(() -> {
             napis.setText("Living animals " + message);
 
-            synchronized (this){
+            synchronized (this) {
                 drawMap();
                 setStats();
                 setCharts();
