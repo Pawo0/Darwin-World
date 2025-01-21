@@ -1,6 +1,7 @@
 package org.example.map;
 
 import org.example.map.objects.Animal;
+import org.example.map.objects.Grass;
 import org.example.model.Vector2d;
 import org.example.simulations.SimulationSettings;
 
@@ -57,9 +58,21 @@ public class WorldMapDeadAnimals extends WorldMap {
     }
 
     @Override
-    public void removeGrass(Vector2d position) {
+    protected void grassGrowOnFields(List<Vector2d> fields) {
+        int randomIndex = (int) (Math.random() * fields.size());
+        Vector2d position = fields.get(randomIndex);
+        grasses.put(position, new Grass(position));
+        removeGrassGrowChance(position);
+
+//        remove allFieldsWithPriority which is inside generateGrassFromGivenFields
+        fields.remove(position);
+    }
+
+
+    @Override
+    public void removeGrassGrowChance(Vector2d position) {
+        super.removeGrassGrowChance(position);
         if (tmpFieldsWithPriority != null) tmpFieldsWithPriority.remove(position);
-        super.removeGrass(position);
     }
 
     @Override

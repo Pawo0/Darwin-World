@@ -124,10 +124,10 @@ public class WorldMap implements WorldMapInterface, MapObserver {
         int randomIndex = (int) (Math.random() * fields.size());
         Vector2d position = fields.get(randomIndex);
         grasses.put(position, new Grass(position));
-        removeGrass(position);
+        removeGrassGrowChance(position);
     }
 
-    protected void removeGrass(Vector2d position) {
+    protected void removeGrassGrowChance(Vector2d position) {
         fieldsWithGrassGrowPriority.remove(position);
         fieldsWithoutGrassGrowPriority.remove(position);
     }
