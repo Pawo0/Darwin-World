@@ -17,6 +17,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import org.example.genomes.Genome;
 import org.example.interfaces.MapChangeListener;
+import org.example.map.WorldMap;
+import org.example.map.WorldMapDeadAnimals;
+import org.example.map.objects.Animal;
+import org.example.map.objects.MapObjectType;
 import org.example.model.*;
 
 import java.math.BigDecimal;
@@ -352,31 +356,36 @@ public class SimulationPresenter implements MapChangeListener {
                 Label label = null;
                 Object object = null;
 
-                if (this.map.isAnimalAt(currentPosition)) {
-                    object = this.map.getAnimalsAt(currentPosition).peek();
-                    if (object != null) {
-                        Animal animal = (Animal) object;
-                        GridPane animalView = createAnimalView(animal, cellSize);
-                        GridPane.setHalignment(animalView, HPos.CENTER);
-                        mapGrid.add(animalView, i, j, 1, 1);
-                        animalView.setOnMouseClicked(event -> {
-                            handleAnimalClick(animal);
-                        });
+                MapObjectType type = map.getMapObjectType(currentPosition);
+
+                switch (type) {
+                    case ANIMAL -> {
+                        object = this.map.getAnimalsAt(currentPosition).peek();
+                        if (object != null) {
+                            Animal animal = (Animal) object;
+                            GridPane animalView = createAnimalView(animal, cellSize);
+                            GridPane.setHalignment(animalView, HPos.CENTER);
+                            mapGrid.add(animalView, i, j, 1, 1);
+                            animalView.setOnMouseClicked(event -> {
+                                handleAnimalClick(animal);
+                            });
+                            continue;
+                        }
+                    }
+                    case GRASS -> {
+                        ImageView grassView = new ImageView(grassImage);
+                        grassView.setFitWidth(cellSize);
+                        grassView.setFitHeight(cellSize);
+                        GridPane.setHalignment(grassView, HPos.CENTER);
+                        mapGrid.add(grassView, i, j, 1, 1);
                         continue;
                     }
-                }
-                else if (this.map.isGrassAt(currentPosition)) {
-                    ImageView grassView = new ImageView(grassImage);
-                    grassView.setFitWidth(cellSize);
-                    grassView.setFitHeight(cellSize);
-                    GridPane.setHalignment(grassView, HPos.CENTER);
-                    mapGrid.add(grassView, i, j, 1, 1);
-                    continue;
-
-                } else if (this.map.isDeadAnimalAt(currentPosition) && settings.isLifeGivingCorpses()) {
-                    object = this.map.getDeadAnimals().get(currentPosition).peek();
-                } else {
-                    label = new Label(" ");
+                    case DEAD_ANIMAL -> {
+                        object = this.map.getDeadAnimals().get(currentPosition).peek();
+                    }
+                    case EMPTY -> {
+                        label = new Label(" ");
+                    }
                 }
 
                 if (object != null) {

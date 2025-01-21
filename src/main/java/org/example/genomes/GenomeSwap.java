@@ -1,6 +1,6 @@
 package org.example.genomes;
 
-import org.example.model.Animal;
+import org.example.map.objects.Animal;
 import org.example.simulations.SimulationSettings;
 
 import java.util.Random;

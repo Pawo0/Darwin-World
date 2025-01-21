@@ -2,6 +2,8 @@ package org.example.simulations;
 
 import org.example.genomes.Genome;
 import org.example.genomes.GenomeSwap;
+import org.example.map.WorldMap;
+import org.example.map.objects.Animal;
 import org.example.model.*;
 
 import java.util.ArrayList;

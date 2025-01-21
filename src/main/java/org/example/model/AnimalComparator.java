@@ -1,5 +1,7 @@
 package org.example.model;
 
+import org.example.map.objects.Animal;
+
 import java.util.Comparator;
 import java.util.Random;
 

@@ -1,9 +1,9 @@
 package org.example.simulations;
 
-import org.example.model.Animal;
+import org.example.map.objects.Animal;
 import org.example.genomes.Genome;
 import org.example.model.Vector2d;
-import org.example.model.WorldMap;
+import org.example.map.WorldMap;
 
 import java.io.FileWriter;
 import java.io.IOException;

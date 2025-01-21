@@ -1,7 +1,7 @@
 package org.example.consoleview;
 
 import org.example.model.Vector2d;
-import org.example.model.WorldMap;
+import org.example.map.WorldMap;
 
 /**
  * The map visualizer converts the {@link WorldMap} map into a string

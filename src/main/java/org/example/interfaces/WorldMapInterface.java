@@ -1,6 +1,6 @@
 package org.example.interfaces;
 
-import org.example.model.Animal;
+import org.example.map.objects.Animal;
 import org.example.model.IncorrectPositionException;
 import org.example.model.Vector2d;
 

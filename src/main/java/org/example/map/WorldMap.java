@@ -1,4 +1,4 @@
-package org.example.model;
+package org.example.map;
 
 import org.example.consoleview.MapVisualizer;
 import org.example.genomes.Genome;
@@ -6,6 +6,10 @@ import org.example.genomes.GenomeSwap;
 import org.example.interfaces.MapChangeListener;
 import org.example.interfaces.MapObserver;
 import org.example.interfaces.WorldMapInterface;
+import org.example.map.objects.Animal;
+import org.example.map.objects.Grass;
+import org.example.map.objects.MapObjectType;
+import org.example.model.*;
 import org.example.simulations.SimulationSettings;
 
 import java.util.*;
@@ -324,5 +328,17 @@ public class WorldMap implements WorldMapInterface, MapObserver {
             amount += animals.size();
         }
         return amount;
+    }
+
+    public MapObjectType getMapObjectType(Vector2d position) {
+        if (isAnimalAt(position)) {
+            return MapObjectType.ANIMAL;
+        } else if (isGrassAt(position)) {
+            return MapObjectType.GRASS;
+        } else if (isDeadAnimalAt(position)) {
+            return MapObjectType.DEAD_ANIMAL;
+        } else {
+            return MapObjectType.EMPTY;
+        }
     }
 }

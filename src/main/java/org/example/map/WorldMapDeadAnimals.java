@@ -1,5 +1,7 @@
-package org.example.model;
+package org.example.map;
 
+import org.example.map.objects.Animal;
+import org.example.model.Vector2d;
 import org.example.simulations.SimulationSettings;
 
 import java.util.*;

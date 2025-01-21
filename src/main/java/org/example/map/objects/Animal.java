@@ -1,8 +1,10 @@
-package org.example.model;
+package org.example.map.objects;
 
 
 import org.example.genomes.Genome;
 import org.example.interfaces.WorldElement;
+import org.example.model.MapDirection;
+import org.example.model.Vector2d;
 import org.example.simulations.SimulationSettings;
 
 import java.util.ArrayList;

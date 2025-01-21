@@ -1,6 +1,7 @@
 package org.example.model;
 
 import org.example.genomes.Genome;
+import org.example.map.objects.Animal;
 
 public class AnimalStats {
     private final Genome genome;
