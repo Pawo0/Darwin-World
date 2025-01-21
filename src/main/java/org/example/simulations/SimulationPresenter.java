@@ -381,7 +381,11 @@ public class SimulationPresenter implements MapChangeListener {
                         continue;
                     }
                     case DEAD_ANIMAL -> {
-                        object = this.map.getDeadAnimals().get(currentPosition).peek();
+                        if (settings.isLifeGivingCorpses()) {
+                            object = this.map.getDeadAnimals().get(currentPosition).peek();
+                        }else {
+                            label = new Label(" ");
+                        }
                     }
                     case EMPTY -> {
                         label = new Label(" ");
