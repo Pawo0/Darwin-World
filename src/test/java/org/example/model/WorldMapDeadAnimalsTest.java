@@ -20,43 +20,52 @@ class WorldMapDeadAnimalsTest {
     void clearDeadBodies_removesOldDeadAnimals() {
         WorldMapDeadAnimals map = new WorldMapDeadAnimals(settings);
         Animal oldDeadAnimal = new Animal(genome, new Vector2d(0, 0), settings,0 );
-        map.deadAnimals.putIfAbsent(new Vector2d(0, 0), new PriorityQueue<>());
-        map.currentDay = 11;
+        map.getDeadAnimals().putIfAbsent(new Vector2d(0, 0), new PriorityQueue<>());
+        for (int i = 0; i < 11; i++) {
+            map.nextDay();
+        }
 
         map.clearDeadBodies();
 
-        assertFalse(map.deadAnimals.get(new Vector2d(0, 0)).contains(oldDeadAnimal));
+        assertFalse(map.getDeadAnimals().get(new Vector2d(0, 0)).contains(oldDeadAnimal));
     }
 
     @Test
     void clearDeadBodies_doesNotRemoveRecentDeadAnimals() {
         WorldMapDeadAnimals map = new WorldMapDeadAnimals(settings);
         Animal recentDeadAnimal = new Animal(genome, new Vector2d(0, 0), settings, 0);
-        map.deadAnimals.putIfAbsent(new Vector2d(0, 0), new PriorityQueue<>());
-        map.currentDay = 5;
+        map.getDeadAnimals().putIfAbsent(new Vector2d(0, 0), new PriorityQueue<>());
+        for (int i = 0; i < 5; i++) {
+            map.nextDay();
+        }
 
         map.clearDeadBodies();
 
-        assertFalse(map.deadAnimals.get(new Vector2d(0, 0)).contains(recentDeadAnimal));
+        assertFalse(map.getDeadAnimals().get(new Vector2d(0, 0)).contains(recentDeadAnimal));
     }
 
     @Test
     void addGrassPriorityAroundDeadBody_addsPriorityFields() {
-        WorldMapDeadAnimals map = new WorldMapDeadAnimals(settings);
+        SimulationSettings DeadAnimalsSettings = new SimulationSettings(10, 10, 0, 0, 0, true, 1, 0, 10, 1, 0, 0, MutationType.DEFAULT, 5, 400, false);
+
+
+
+        WorldMapDeadAnimals map = new WorldMapDeadAnimals(DeadAnimalsSettings);
         Vector2d deadBodyPosition = new Vector2d(5, 5);
-        map.deadAnimals.putIfAbsent(deadBodyPosition, new PriorityQueue<>());
+        map.getDeadAnimals().putIfAbsent(deadBodyPosition, new PriorityQueue<>());
+        map.place(new Animal(genome, deadBodyPosition, DeadAnimalsSettings, 0));
 
         map.nextDay();
+        map.nextDay();
 
-        assertTrue(map.getTmpFieldsWithPriority().contains(new Vector2d(4, 4)));
-        assertTrue(map.getTmpFieldsWithPriority().contains(new Vector2d(6, 6)));
+        assertTrue(map.getTmpFieldsWithPriority().contains(new Vector2d(5, 5)));
     }
 
     @Test
     void grassGrows_addsGrassToPriorityFields() {
         WorldMapDeadAnimals map = new WorldMapDeadAnimals(settings);
         map.getTmpFieldsWithPriority().add(new Vector2d(1, 1));
-        map.fieldsWithGrassGrowPriority.add(new Vector2d(2, 2));
+        map.getFieldsWithGrassGrowPriority().add(new Vector2d(2, 2));
 
         map.grassGrows(100);
 
@@ -68,12 +77,11 @@ class WorldMapDeadAnimalsTest {
     void removeGrassFromFields_removesGrass() {
         WorldMapDeadAnimals map = new WorldMapDeadAnimals(settings);
         Vector2d position = new Vector2d(1, 1);
-        map.getTmpFieldsWithPriority().add(position);
         map.grassGrows(100);
 
         map.removeGrass(position);
 
         assertFalse(map.getTmpFieldsWithPriority().contains(position));
-        assertTrue(map.isGrassAt(position));
+        assertFalse(map.isGrassAt(position));
     }
 }

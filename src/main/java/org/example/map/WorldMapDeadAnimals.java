@@ -57,7 +57,7 @@ public class WorldMapDeadAnimals extends WorldMap {
     }
 
     @Override
-    protected void removeGrass(Vector2d position) {
+    public void removeGrass(Vector2d position) {
         if (tmpFieldsWithPriority != null) tmpFieldsWithPriority.remove(position);
         super.removeGrass(position);
     }
